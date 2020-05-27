@@ -19,7 +19,7 @@ const Landing = ({ setAlert }) => {
   // todo stuff
   const {
     todos,
-    addTodo,
+    // addTodo,
     toggleTodo,
     deleteTodo,
     completeSession,
@@ -122,19 +122,19 @@ const Landing = ({ setAlert }) => {
             handleSwitchMode={handleSwitchMode}
           />
           <TodoList
-            todos={todos}
+            // todos={todos}
             toggleTodo={toggleTodo}
-            deleteTodo={deleteTodo}
+            // deleteTodo={deleteTodo}
             handleSwitchTask={handleSwitchTask}
           />
           <TodoForm
-            saveTodo={(todoText) => {
-              const trimmedText = todoText.trim();
+          // saveTodo={(todoText) => {
+          //   const trimmedText = todoText.trim();
 
-              if (trimmedText.length > 0) {
-                addTodo(trimmedText);
-              }
-            }}
+          //   if (trimmedText.length > 0) {
+          //     addTodo(trimmedText);
+          //   }
+          // }}
           />
           {/* <h1 className="x-large">Todo Tracker</h1>
           <p className="lead">

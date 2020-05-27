@@ -10,3 +10,11 @@ export const LOGOUT = "LOGOUT";
 export const GET_PROFILE = "GET_PROFILE";
 export const CLEAR_PROFILE = "CLEAR_PROFILE";
 export const PROFILE_ERROR = "PROFILE_ERROR";
+// Todos
+export const GET_TODOS = "GET_TODOS";
+export const GET_TODO = "GET_TODO";
+export const ADD_TODO = "ADD_TODO";
+export const DELETE_TODO = "DELETE_TODO";
+export const TOGGLE_TODO = "TOGGLE_TODO";
+export const COMPLETE_SESSION = "COMPLETE_SESSION";
+export const TODO_ERROR = "TODO_ERROR";

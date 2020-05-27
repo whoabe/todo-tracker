@@ -6,20 +6,18 @@ import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import Alert from "./components/auth/Alert";
 import Dashboard from "./components/dashboard/Dashboard";
+
 // Redux
 import { Provider } from "react-redux";
 import store from "./store";
-import "./App.css";
-
 import setAuthToken from "./utils/setAuthToken";
 import { loadUser } from "./actions/auth";
 
-if (localStorage.token) {
-  setAuthToken(localStorage.token);
-}
+import "./App.css";
 
 const App = () => {
   useEffect(() => {
+    setAuthToken(localStorage.token);
     store.dispatch(loadUser());
   }, []);
   // adding the [] after useEffect has it only run once

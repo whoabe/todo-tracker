@@ -12,7 +12,7 @@ const checkObjectId = require("../../middleware/checkObjectId");
 // @access   Private
 router.post(
   "/",
-  [auth, [check("text", "Text is required").not().isEmpty()]],
+  [auth, [check("value", "Value is required").not().isEmpty()]],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -24,8 +24,8 @@ router.post(
 
       const newTodo = new Todo({
         user: req.user.id,
-        text: req.body.text,
-        // completed: req.body.completed
+        value: req.body.value,
+        completed: false,
       });
 
       const todo = await newTodo.save();
