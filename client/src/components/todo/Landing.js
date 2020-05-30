@@ -9,11 +9,12 @@ import Controls from "./Controls";
 import TodoList from "./TodoList";
 import TodoForm from "./TodoForm";
 import { setAlert } from "../../actions/alert";
+import { setTask } from "../../actions/task";
 
-const Landing = ({ setAlert }) => {
+const Landing = ({ setAlert, setTask, task }) => {
   const [mode, setMode] = useState("timer");
   const [isTimerActive, setIsTimerActive] = useState(false);
-  const [currentTask, setCurrentTask] = useState(null);
+  // const [currentTask, setCurrentTask] = useState(null);
   const [timerTime, setTimerTime] = useState(0);
 
   // todo stuff
@@ -56,14 +57,14 @@ const Landing = ({ setAlert }) => {
   const handleStop = () => {
     // const momentEndTime = moment().format("MMMM Do YYYY, h:mm:ss a");
     setIsTimerActive(false);
-    completeSession(timerTime, currentTask, mode);
+    completeSession(timerTime, task, mode);
     setMode("timer");
     setTimerTime(0);
   };
 
   const handleSwitchMode = () => {
     setIsTimerActive(false);
-    completeSession(timerTime, currentTask, mode);
+    completeSession(timerTime, task, mode);
     if (mode === "timer") {
       setMode("break");
       setTimerTime(0);
@@ -79,22 +80,22 @@ const Landing = ({ setAlert }) => {
 
   const handleSwitchTask = (id) => {
     // only completes session if there is a current task and the timer time is not 0
-    if (currentTask != null && timerTime !== 0) {
-      completeSession(timerTime, currentTask, mode);
+    if (task != null && timerTime !== 0) {
+      completeSession(timerTime, task, mode);
     }
     setIsTimerActive(false);
     setMode("timer");
     // pass in the index of the task that was selected
     const currentTodo = todos.filter((todo) => todo.id === id)[0];
-    setCurrentTask(currentTodo);
+    setTask(currentTodo);
     setTimerTime(0);
   };
 
   const checkCurrentTask = () => {
     // checks if there is a current task, otherwise setAlert
     // debugger;
-    if (currentTask == null) {
-      console.log("currentTask is " + currentTask);
+    if (task == null) {
+      console.log("currentTask is " + task);
       setAlert("No task selected", "danger");
       return false;
     } else {
@@ -109,7 +110,7 @@ const Landing = ({ setAlert }) => {
           <Timer
             time={[timerTime, setTimerTime]}
             mode={[mode, setMode]}
-            currentTask={[currentTask]}
+            task={task}
           />
           <Controls
             checkCurrentTask={checkCurrentTask}
@@ -122,9 +123,7 @@ const Landing = ({ setAlert }) => {
             handleSwitchMode={handleSwitchMode}
           />
           <TodoList
-            // todos={todos}
             toggleTodo={toggleTodo}
-            // deleteTodo={deleteTodo}
             handleSwitchTask={handleSwitchTask}
           />
           <TodoForm
@@ -146,4 +145,8 @@ const Landing = ({ setAlert }) => {
   );
 };
 
-export default connect(null, { setAlert })(Landing);
+const mapStateToProps = (state) => ({
+  task: state.task.task,
+});
+
+export default connect(mapStateToProps, { setAlert, setTask })(Landing);

@@ -117,6 +117,22 @@ export const getTodo = (id) => async (dispatch) => {
   }
 };
 
+// Complete Session
+export const completeSession = (todoId, data) => async (dispatch) => {
+  try {
+    const res = await api.post(`/session/${todoId}`, data);
+    dispatch({
+      type: COMPLETE_SESSION,
+      payload: res.data,
+    });
+    dispatch(setAlert("Session Added", "success"));
+  } catch (err) {
+    dispatch({
+      type: TODO_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
 // // Add comment
 // export const addComment = (postId, formData) => async dispatch => {
 //     try {

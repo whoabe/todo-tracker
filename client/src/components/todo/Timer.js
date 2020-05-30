@@ -1,10 +1,12 @@
 import React from "react";
 import moment from "moment";
 
-const Timer = ({ time, mode, currentTask }) => {
+const Timer = ({ time, mode, task }) => {
   const [elapsedTime] = time;
   const [currentMode] = mode;
-  const [task] = currentTask;
+  // const [task] = currentTask;
+  console.log(task);
+  console.log(typeof task);
   return (
     <div className="timer">
       <div className="task large">
