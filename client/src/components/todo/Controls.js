@@ -1,4 +1,6 @@
 import React from "react";
+import { connect } from "react-redux";
+import { startSession } from "../../actions/todo";
 
 const Controls = ({
   checkCurrentTask,
@@ -10,6 +12,8 @@ const Controls = ({
   mode,
   handleStop,
   handleSwitchMode,
+  startSession,
+  task,
 }) => {
   const [activeStatus, setActiveStatus] = isTimerActive;
   const [currentMode] = mode;
@@ -52,4 +56,9 @@ const Controls = ({
     </div>
   );
 };
-export default Controls;
+
+const mapStateToProps = (state) => ({
+  task: state.task.task,
+});
+
+export default connect(mapStateToProps, { startSession })(Controls);

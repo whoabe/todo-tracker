@@ -6,6 +6,7 @@ import {
   DELETE_TODO,
   TOGGLE_TODO,
   COMPLETE_SESSION,
+  START_SESSION,
   TODO_ERROR,
 } from "./types";
 import { setAlert } from "../actions/alert";
@@ -117,6 +118,22 @@ export const getTodo = (id) => async (dispatch) => {
   }
 };
 
+// Start Session
+export const startSession = (todoId, data) => async (dispatch) => {
+  try {
+    const res = await api.post(`/session/${todoId}`, data);
+    dispatch({
+      type: START_SESSION,
+      payload: res.data,
+    });
+    dispatch(setAlert("Session Started", "success"));
+  } catch (err) {
+    dispatch({
+      type: TODO_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
 // Complete Session
 export const completeSession = (todoId, data) => async (dispatch) => {
   try {
@@ -125,7 +142,7 @@ export const completeSession = (todoId, data) => async (dispatch) => {
       type: COMPLETE_SESSION,
       payload: res.data,
     });
-    dispatch(setAlert("Session Added", "success"));
+    dispatch(setAlert("Session Completed", "success"));
   } catch (err) {
     dispatch({
       type: TODO_ERROR,

@@ -1,8 +1,15 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { getTodos, deleteTodo } from "../../actions/todo";
+import { removeTask } from "../../actions/task";
 
-const TodoList = ({ getTodos, deleteTodo, todo: { todos } }) => {
+const TodoList = ({
+  getTodos,
+  deleteTodo,
+  todo: { todos },
+  handleSwitchTask,
+  removeTask,
+}) => {
   useEffect(() => {
     getTodos();
   }, []);
@@ -19,7 +26,7 @@ const TodoList = ({ getTodos, deleteTodo, todo: { todos } }) => {
             <span
               className="todo-text mx"
               style={{ textDecoration: todo.isCompleted ? "line-through" : "" }}
-              // onClick={() => handleSwitchTask(todo.id)}
+              onClick={() => handleSwitchTask(todo._id)}
             >
               {todo.value}
             </span>
@@ -31,7 +38,13 @@ const TodoList = ({ getTodos, deleteTodo, todo: { todos } }) => {
             {/* <span className="todo-time mx">
               {todo.totalTime.length > 0 ? todo.totalTime : null}
             </span> */}
-            <button className="delete-btn" onClick={() => deleteTodo(todo._id)}>
+            <button
+              className="delete-btn"
+              onClick={() => {
+                deleteTodo(todo._id);
+                removeTask();
+              }}
+            >
               <span>&times;</span>
             </button>
           </div>
@@ -43,7 +56,9 @@ const TodoList = ({ getTodos, deleteTodo, todo: { todos } }) => {
 
 const mapStateToProps = (state) => ({ todo: state.todo });
 
-export default connect(mapStateToProps, { getTodos, deleteTodo })(TodoList);
+export default connect(mapStateToProps, { getTodos, deleteTodo, removeTask })(
+  TodoList
+);
 // import React from "react";
 
 // const TodoList = ({ todos, toggleTodo, deleteTodo, handleSwitchTask }) => {

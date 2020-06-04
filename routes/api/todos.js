@@ -161,14 +161,14 @@ router.post(
         user: req.user.id,
         description: req.body.description,
         startTime: req.body.startTime,
-        endTime: req.body.endTime,
       };
 
       todo.sessions.unshift(newSession);
 
       await todo.save();
 
-      res.json(todo.sessions);
+      // res.json(todo.sessions);
+      res.json(todo);
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");
@@ -176,6 +176,37 @@ router.post(
   }
 );
 
+// @route    PUT api/todos/session/:id/:session_id
+// @desc     Complete session
+// @access   Private
+router.put("/session/:id/:session_id", auth, async (req, res) => {
+  try {
+    const todo = await Todo.findById(req.params.id);
+
+    // Pull out session
+    const session = todo.sessions.find(
+      (session) => session.id === req.params.session_id
+    );
+    // Make sure session exists
+    if (!session) {
+      return res.status(404).json({ msg: "Session does not exist" });
+    }
+    // Check user
+    if (session.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+
+    // add endTime to Todo
+    session.endTime = req.body.endTime;
+    await todo.save();
+
+    // return res.json(todo.sessions);
+    return res.json(todo);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server Error");
+  }
+});
 // @route    DELETE api/todos/session/:id/:session_id
 // @desc     Delete session
 // @access   Private

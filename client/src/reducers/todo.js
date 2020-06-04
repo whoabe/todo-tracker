@@ -4,6 +4,7 @@ import {
   ADD_TODO,
   DELETE_TODO,
   TOGGLE_TODO,
+  START_SESSION,
   COMPLETE_SESSION,
   TODO_ERROR,
 } from "../actions/types";
@@ -32,6 +33,8 @@ export default function (state = initialState, action) {
         loading: false,
       };
     case ADD_TODO:
+    case START_SESSION:
+    case COMPLETE_SESSION:
       return {
         ...state,
         todos: [payload, ...state.todos],

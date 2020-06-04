@@ -10,43 +10,50 @@ import TodoList from "./TodoList";
 import TodoForm from "./TodoForm";
 import { setAlert } from "../../actions/alert";
 import { setTask } from "../../actions/task";
+import { startSession, completeSession } from "../../actions/todo";
 
-const Landing = ({ setAlert, setTask, task }) => {
+const Landing = ({
+  setAlert,
+  setTask,
+  task,
+  startSession,
+  completeSession,
+  todo: { todos },
+}) => {
   const [mode, setMode] = useState("timer");
   const [isTimerActive, setIsTimerActive] = useState(false);
   // const [currentTask, setCurrentTask] = useState(null);
   const [timerTime, setTimerTime] = useState(0);
 
   // todo stuff
-  const {
-    todos,
-    // addTodo,
-    toggleTodo,
-    deleteTodo,
-    completeSession,
-  } = useTodoState([
-    {
-      id: 1,
-      text: "task 1",
-      isCompleted: false,
-      totalTime: 25,
-      sessions: [
-        {
-          sessionID: 1,
-          length: 25,
-          startTime: "12:00",
-          endTime: "12:25",
-        },
-      ],
-    },
-    {
-      id: 2,
-      text: "task 2",
-      isCompleted: true,
-      sessions: [],
-      totalTime: 0,
-    },
-  ]);
+  // const {
+  //   todos,
+  //   // addTodo,
+  //   toggleTodo,
+  //   // completeSession,
+  // } = useTodoState([
+  //   {
+  //     id: 1,
+  //     text: "task 1",
+  //     isCompleted: false,
+  //     totalTime: 25,
+  //     sessions: [
+  //       {
+  //         sessionID: 1,
+  //         length: 25,
+  //         startTime: "12:00",
+  //         endTime: "12:25",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: 2,
+  //     text: "task 2",
+  //     isCompleted: true,
+  //     sessions: [],
+  //     totalTime: 0,
+  //   },
+  // ]);
 
   useInterval(
     () => setTimerTime(timerTime + 1000),
@@ -86,7 +93,7 @@ const Landing = ({ setAlert, setTask, task }) => {
     setIsTimerActive(false);
     setMode("timer");
     // pass in the index of the task that was selected
-    const currentTodo = todos.filter((todo) => todo.id === id)[0];
+    const currentTodo = todos.filter((todo) => todo._id === id)[0];
     setTask(currentTodo);
     setTimerTime(0);
   };
@@ -107,11 +114,7 @@ const Landing = ({ setAlert, setTask, task }) => {
     <section className="landing">
       <div className="dark-overlay">
         <div className="landing-inner">
-          <Timer
-            time={[timerTime, setTimerTime]}
-            mode={[mode, setMode]}
-            task={task}
-          />
+          <Timer time={[timerTime, setTimerTime]} mode={[mode, setMode]} />
           <Controls
             checkCurrentTask={checkCurrentTask}
             isTimerActive={[isTimerActive, setIsTimerActive]}
@@ -123,7 +126,7 @@ const Landing = ({ setAlert, setTask, task }) => {
             handleSwitchMode={handleSwitchMode}
           />
           <TodoList
-            toggleTodo={toggleTodo}
+            // toggleTodo={toggleTodo}
             handleSwitchTask={handleSwitchTask}
           />
           <TodoForm
@@ -147,6 +150,12 @@ const Landing = ({ setAlert, setTask, task }) => {
 
 const mapStateToProps = (state) => ({
   task: state.task.task,
+  todo: state.todo,
 });
 
-export default connect(mapStateToProps, { setAlert, setTask })(Landing);
+export default connect(mapStateToProps, {
+  setAlert,
+  setTask,
+  startSession,
+  completeSession,
+})(Landing);

@@ -5,7 +5,7 @@ import { setAlert } from "../actions/alert";
 export const setTask = (task) => (dispatch) => {
   dispatch({
     type: SET_TASK,
-    payload: { task },
+    payload: task,
   });
   dispatch(setAlert("Task Set", "success"));
 };
