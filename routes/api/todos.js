@@ -26,6 +26,7 @@ router.post(
         user: req.user.id,
         value: req.body.value,
         completed: false,
+        totalTime: 0,
       });
 
       const todo = await newTodo.save();
@@ -158,17 +159,18 @@ router.post(
       const todo = await Todo.findById(req.params.id);
 
       const newSession = {
-        user: req.user.id,
-        description: req.body.description,
+        // user: req.user.id,
+        todo: req.params.id,
+        // description: req.body.description,
         startTime: req.body.startTime,
       };
 
       todo.sessions.unshift(newSession);
 
       await todo.save();
-
-      // res.json(todo.sessions);
-      res.json(todo);
+      //
+      const currentSession = todo.sessions[0];
+      res.json(currentSession);
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");
@@ -182,26 +184,31 @@ router.post(
 router.put("/session/:id/:session_id", auth, async (req, res) => {
   try {
     const todo = await Todo.findById(req.params.id);
-
+    // console.log(todo);
     // Pull out session
     const session = todo.sessions.find(
       (session) => session.id === req.params.session_id
     );
+    // console.log(session);
+    // Check user
+    if (todo.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
     // Make sure session exists
     if (!session) {
       return res.status(404).json({ msg: "Session does not exist" });
     }
-    // Check user
-    if (session.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorized" });
-    }
 
     // add endTime to Todo
     session.endTime = req.body.endTime;
+    todo.totalTime += session.endTime - session.startTime;
     await todo.save();
 
-    // return res.json(todo.sessions);
-    return res.json(todo);
+    const completedSession = todo.sessions.find(
+      (session) => session.id === req.params.session_id
+    );
+    // want to return the saved/completed session
+    return res.json(completedSession);
   } catch (err) {
     console.error(err.message);
     return res.status(500).send("Server Error");
@@ -230,7 +237,7 @@ router.delete("/session/:id/:session_id", auth, async (req, res) => {
     todo.sessions = todo.sessions.filter(
       ({ id }) => id !== req.params.session_id
     );
-
+    // need to check if there is an endTime, if yes, then subtract
     await todo.save();
 
     return res.json(todo.sessions);

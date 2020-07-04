@@ -19,6 +19,7 @@ const TodoForm = ({ addTodo }) => {
           className="input"
           onChange={onChange}
           value={value}
+          placeholder="Add task"
         />
       </form>
     </div>

@@ -28,6 +28,9 @@ const TodoSchema = new Schema({
       },
     },
   ],
+  totalTime: {
+    type: Number,
+  },
 });
 
 module.exports = mongoose.model("todo", TodoSchema);

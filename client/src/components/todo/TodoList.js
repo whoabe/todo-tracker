@@ -15,41 +15,68 @@ const TodoList = ({
   }, []);
   return (
     <div className="todo-list m-1">
-      <ul>
-        {todos.map((todo) => (
-          <div key={todo._id} className="todo-row">
-            <input
-              type="checkbox"
-              checked={todo.isCompleted}
-              // onChange={() => toggleTodo(todo.id)}
-            />
-            <span
-              className="todo-text mx"
-              style={{ textDecoration: todo.isCompleted ? "line-through" : "" }}
-              onClick={() => handleSwitchTask(todo._id)}
-            >
-              {todo.value}
-            </span>
-            <span className="todo-sessions mx">
-              {/* this should be the number of "timers" completed */}
-              {todo.sessions.length}
-              {/* {todo.sessions.length > 0 ? todo.sessions.length : null} */}
-            </span>
-            {/* <span className="todo-time mx">
+      {todos.length > 0 && (
+        <ul>
+          {todos.map((todo) => (
+            <div key={todo._id} className="todo-row">
+              <input
+                type="checkbox"
+                checked={todo.isCompleted}
+                // onChange={() => toggleTodo(todo.id)}
+              />
+              <span
+                className="todo-text mx"
+                style={{
+                  textDecoration: todo.isCompleted ? "line-through" : "",
+                }}
+                onClick={() => handleSwitchTask(todo._id)}
+              >
+                {todo.value}
+              </span>
+              <span className="todo-sessions mx">
+                {/* this should be the number of "timers" completed */}
+                {todo.sessions.length}
+                {/* {todo.sessions.length > 0 ? todo.sessions.length : null} */}
+              </span>
+              {/* <span className="todo-time mx">
               {todo.totalTime.length > 0 ? todo.totalTime : null}
             </span> */}
-            <button
-              className="delete-btn"
-              onClick={() => {
-                deleteTodo(todo._id);
-                removeTask();
-              }}
-            >
-              <span>&times;</span>
-            </button>
-          </div>
-        ))}
-      </ul>
+              {/* <button
+                className="delete-btn"
+                onClick={() => {
+                  deleteTodo(todo._id);
+                  removeTask();
+                }}
+              > */}
+              {/* <span>&times;</span> */}
+              {todo.sessions.length > 0 && (
+                <span className="mx dropdown-span">
+                  <i
+                    className="fas fa-angle-down"
+                    onClick={() => console.log("drop down clicked")}
+                  ></i>
+                </span>
+              )}
+              <span className="mx edit-span">
+                <i
+                  className="far fa-edit"
+                  onClick={() => console.log("edit button clicked")}
+                ></i>
+              </span>
+              <span className="mx trash-span">
+                <i
+                  className="far fa-trash-alt"
+                  onClick={() => {
+                    deleteTodo(todo._id);
+                    removeTask();
+                  }}
+                ></i>
+              </span>
+              {/* </button> */}
+            </div>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

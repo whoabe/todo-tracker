@@ -17,17 +17,23 @@ const Controls = ({
 }) => {
   const [activeStatus, setActiveStatus] = isTimerActive;
   const [currentMode] = mode;
-  // console.log("activeStatus: " + activeStatus);
-  // console.log("isTimerActive: " + isTimerActive);
-  // console.log("timer time: " + timerTime);
-  // console.log("mode: " + mode);
+  const handleStart = () => {
+    if ((checkCurrentTask() === true) & (task != null)) {
+      setActiveStatus(!activeStatus);
+      const startTime = JSON.stringify(Date.now());
+      const data = { startTime: startTime };
+      startSession(task._id, data);
+      // need to call setSession with the startSession response
+      // setSession()
+    }
+  };
+
   return (
     <div className="controls">
       {/* if the mode = timer and timer is not active, then show start button */}
       {currentMode === "timer" && activeStatus === false && timerTime === 0 ? (
-        <button
-          onClick={() => checkCurrentTask() && setActiveStatus(!activeStatus)}
-        >
+        <button onClick={() => handleStart()}>
+          {/* check if there is a task, if there is then toggle the activestatus */}
           <i className="fas fa-play btn"></i>
         </button>
       ) : (
@@ -59,6 +65,7 @@ const Controls = ({
 
 const mapStateToProps = (state) => ({
   task: state.task.task,
+  currentSession: state.currentSession,
 });
 
 export default connect(mapStateToProps, { startSession })(Controls);

@@ -8,6 +8,8 @@ import {
   COMPLETE_SESSION,
   START_SESSION,
   TODO_ERROR,
+  SET_SESSION,
+  REMOVE_SESSION,
 } from "./types";
 import { setAlert } from "../actions/alert";
 
@@ -121,28 +123,41 @@ export const getTodo = (id) => async (dispatch) => {
 // Start Session
 export const startSession = (todoId, data) => async (dispatch) => {
   try {
-    const res = await api.post(`/session/${todoId}`, data);
+    const res = await api.post(`/todos/session/${todoId}`, data);
+    // adds a session to the todo
+    console.log("todoId: " + todoId);
     dispatch({
       type: START_SESSION,
+      payload: { todoId, data: res.data },
+    });
+    // sets the current session
+    dispatch({
+      type: SET_SESSION,
       payload: res.data,
     });
     dispatch(setAlert("Session Started", "success"));
   } catch (err) {
     dispatch({
       type: TODO_ERROR,
-      payload: { msg: err.response.statusText, status: err.response.status },
+      // broken
+      // payload: { msg: err.response.statusText, status: err.response.status },
     });
   }
 };
 // Complete Session
-export const completeSession = (todoId, data) => async (dispatch) => {
+export const completeSession = (todoId, sessionId, data) => async (
+  dispatch
+) => {
   try {
-    const res = await api.post(`/session/${todoId}`, data);
+    const res = await api.put(`/todos/session/${todoId}/${sessionId}`, data);
     dispatch({
       type: COMPLETE_SESSION,
-      payload: res.data,
+      payload: { todoId, sessionId, data: res.data },
     });
     dispatch(setAlert("Session Completed", "success"));
+    dispatch({
+      type: REMOVE_SESSION,
+    });
   } catch (err) {
     dispatch({
       type: TODO_ERROR,

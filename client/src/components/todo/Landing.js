@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import useTodoState from "../../hooks/useTodoState";
 import useInterval from "../../hooks/useInterval";
 import Timer from "./Timer";
 import Controls from "./Controls";
@@ -16,9 +15,10 @@ const Landing = ({
   setAlert,
   setTask,
   task,
-  startSession,
   completeSession,
   todo: { todos },
+  currentSession,
+  startSession,
 }) => {
   const [mode, setMode] = useState("timer");
   const [isTimerActive, setIsTimerActive] = useState(false);
@@ -61,17 +61,33 @@ const Landing = ({
     // console.log(timerTime)
   );
 
+  const completeSessionData = () => {
+    const endTime = JSON.stringify(Date.now());
+    const data = { endTime };
+    return data;
+  };
+
   const handleStop = () => {
     // const momentEndTime = moment().format("MMMM Do YYYY, h:mm:ss a");
     setIsTimerActive(false);
-    completeSession(timerTime, task, mode);
+    // completeSession(timerTime, task, mode);
+    completeSession(task._id, currentSession._id, completeSessionData());
     setMode("timer");
     setTimerTime(0);
   };
 
   const handleSwitchMode = () => {
     setIsTimerActive(false);
-    completeSession(timerTime, task, mode);
+    // completeSession(timerTime, task, mode);
+    if (currentSession != null) {
+      console.log("complete session");
+      completeSession(task._id, currentSession._id, completeSessionData());
+    } else {
+      console.log("start session");
+      const startTime = JSON.stringify(Date.now());
+      const data = { startTime: startTime };
+      startSession(task._id, data);
+    }
     if (mode === "timer") {
       setMode("break");
       setTimerTime(0);
@@ -88,7 +104,8 @@ const Landing = ({
   const handleSwitchTask = (id) => {
     // only completes session if there is a current task and the timer time is not 0
     if (task != null && timerTime !== 0) {
-      completeSession(timerTime, task, mode);
+      // completeSession(timerTime, task, mode);
+      completeSession(task._id, currentSession._id, completeSessionData());
     }
     setIsTimerActive(false);
     setMode("timer");
@@ -151,6 +168,7 @@ const Landing = ({
 const mapStateToProps = (state) => ({
   task: state.task.task,
   todo: state.todo,
+  currentSession: state.currentSession,
 });
 
 export default connect(mapStateToProps, {

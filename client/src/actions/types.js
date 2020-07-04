@@ -22,3 +22,6 @@ export const TODO_ERROR = "TODO_ERROR";
 // Tasks
 export const SET_TASK = "SET_TASK";
 export const REMOVE_TASK = "REMOVE_TASK";
+// Session
+export const SET_SESSION = "SET_SESSION";
+export const REMOVE_SESSION = "REMOVE_SESSION";
