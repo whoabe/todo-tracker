@@ -2,6 +2,14 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { getTodos, deleteTodo } from "../../actions/todo";
 import { removeTask } from "../../actions/task";
+import SessionsList from "./SessionsList";
+
+const ToggleSessionList = (todoId) => {
+  console.log(todoId + " toggled");
+
+  // return <SessionsList todoId={todoId} />;
+  return <SessionsList todoId />;
+};
 
 const TodoList = ({
   getTodos,
@@ -53,7 +61,7 @@ const TodoList = ({
                 <span className="mx dropdown-span">
                   <i
                     className="fas fa-angle-down"
-                    onClick={() => console.log("drop down clicked")}
+                    onClick={() => ToggleSessionList(todo._id)}
                   ></i>
                 </span>
               )}

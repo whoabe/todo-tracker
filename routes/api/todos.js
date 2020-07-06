@@ -230,13 +230,16 @@ router.delete("/session/:id/:session_id", auth, async (req, res) => {
       return res.status(404).json({ msg: "Session does not exist" });
     }
     // Check user
-    if (session.user.toString() !== req.user.id) {
+    if (todo.user.toString() !== req.user.id) {
       return res.status(401).json({ msg: "User not authorized" });
     }
 
     todo.sessions = todo.sessions.filter(
       ({ id }) => id !== req.params.session_id
     );
+    if (session.endTime) {
+      todo.totalTime -= session.endTime - session.startTime;
+    }
     // need to check if there is an endTime, if yes, then subtract
     await todo.save();
 
