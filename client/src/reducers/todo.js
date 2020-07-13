@@ -6,7 +6,9 @@ import {
   TOGGLE_TODO,
   START_SESSION,
   COMPLETE_SESSION,
+  DELETE_SESSION,
   TODO_ERROR,
+  EDIT_TODO,
 } from "../actions/types";
 
 const initialState = {
@@ -42,57 +44,47 @@ export default function (state = initialState, action) {
       // find the correct todo and add a new session to todo.sessions
       return {
         ...state,
-        todos: state.todos.map(
-          (todo) => {
-            if (todo._id === payload.todoId) {
-              const sessions = [...todo.sessions, payload.data];
-              return { ...todo, sessions };
-            } else {
-              return todo;
-            }
+        todos: state.todos.map((todo) => {
+          if (todo._id === payload.todoId) {
+            const sessions = [...todo.sessions, payload.data];
+            return { ...todo, sessions };
+          } else {
+            return todo;
           }
-          // todo._id === payload.todoId
-          //   ? {
-          //       [todo]: {
-          //         ...state[todo],
-          //         [sessions]: [...state[todo][sessions], payload.data],
-          //       },
-          //     }
-          //   : todo
-          // ISSUE COULD HAVE TO DO W THE INITAL STATE? FIGURE OUT WHAT DATA STRUCTURE YOU WANT FOR TODO AND SESSIONS ~ OBJECT OR ARRAYS?
-        ),
+        }),
       };
     case COMPLETE_SESSION:
-      const todoIndex = state.todos.findIndex(
+    case EDIT_TODO:
+      return {
+        ...state,
+        todos: state.todos.map((todo) => {
+          if (todo._id !== payload.todoId) {
+            return todo;
+          }
+          return {
+            ...todo,
+            ...payload.data,
+          };
+        }),
+      };
+
+    case DELETE_SESSION:
+      const todoIndex2 = state.todos.findIndex(
         (todo) => todo._id === payload.todoId
       );
-      const matchedTodo = state.todos[todoIndex];
-      const sessionIndex = matchedTodo.sessions.findIndex(
-        (session) => session._id === payload.sessionId
+      const matchedTodo2 = state.todos[todoIndex2];
+      const updatedSessions2 = matchedTodo2.sessions.filter(
+        (session) => session._id !== payload.sessionId
       );
-      const updatedSessions = matchedTodo.sessions;
-      updatedSessions[sessionIndex] = payload.data;
-      const updatedTodos = state.todos;
-      updatedTodos[todoIndex].sessions = updatedSessions;
-      if (sessionIndex !== -1) {
-        // return {
-        //   ...state,
-        //   todos: {
-        //     ...state.todos,
-        //     sessions: {
-        //       ...state.todos.sessions,
-        //       updatedSessions,
-        //     },
-        //   },
-        // };
-
-        return {
-          ...state,
-          todos: updatedTodos,
-        };
-      }
-      return state;
-    // find the correct todo and correct session and then replace it
+      const updatedTodos2 = state.todos;
+      updatedTodos2[todoIndex2].sessions = updatedSessions2;
+      return {
+        ...state,
+        todos: updatedTodos2,
+      };
+    // get the correct todo
+    // filter out the sesions
+    // update state w updated sessions and updated todos
     case DELETE_TODO:
       return {
         ...state,

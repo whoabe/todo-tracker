@@ -68,10 +68,11 @@ const Landing = ({
   };
 
   const handleStop = () => {
-    // const momentEndTime = moment().format("MMMM Do YYYY, h:mm:ss a");
     setIsTimerActive(false);
-    // completeSession(timerTime, task, mode);
-    completeSession(task._id, currentSession._id, completeSessionData());
+    // need to have if currentSession === null, completeBreak()
+    if (currentSession) {
+      completeSession(task._id, currentSession._id, completeSessionData());
+    }
     setMode("timer");
     setTimerTime(0);
   };

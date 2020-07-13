@@ -26,6 +26,9 @@ const TodoSchema = new Schema({
       endTime: {
         type: Date,
       },
+      time: {
+        type: Number,
+      },
     },
   ],
   totalTime: {

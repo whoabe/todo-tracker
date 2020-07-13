@@ -67,6 +67,27 @@ router.get("/:id", [auth, checkObjectId("id")], async (req, res) => {
   }
 });
 
+// @route    PUT api/todos/session/:id/
+// @desc     Edit todo name
+// @access   Private
+router.put("/:id", auth, async (req, res) => {
+  try {
+    // pull out todo
+    const todo = await Todo.findById(req.params.id);
+    // Check user
+    if (todo.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+    // update the name
+    todo.value = req.body.value;
+    await todo.save();
+    return res.json(todo);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server Error");
+  }
+});
+
 // @route    DELETE api/todos/:id
 // @desc     Delete a todo
 // @access   Private
@@ -163,6 +184,7 @@ router.post(
         todo: req.params.id,
         // description: req.body.description,
         startTime: req.body.startTime,
+        time: 0,
       };
 
       todo.sessions.unshift(newSession);
@@ -184,12 +206,10 @@ router.post(
 router.put("/session/:id/:session_id", auth, async (req, res) => {
   try {
     const todo = await Todo.findById(req.params.id);
-    // console.log(todo);
     // Pull out session
     const session = todo.sessions.find(
       (session) => session.id === req.params.session_id
     );
-    // console.log(session);
     // Check user
     if (todo.user.toString() !== req.user.id) {
       return res.status(401).json({ msg: "User not authorized" });
@@ -201,14 +221,17 @@ router.put("/session/:id/:session_id", auth, async (req, res) => {
 
     // add endTime to Todo
     session.endTime = req.body.endTime;
+    session.time = session.endTime - session.startTime;
     todo.totalTime += session.endTime - session.startTime;
     await todo.save();
 
-    const completedSession = todo.sessions.find(
-      (session) => session.id === req.params.session_id
-    );
-    // want to return the saved/completed session
-    return res.json(completedSession);
+    // if you want to return the saved/completed session:
+    // const completedSession = todo.sessions.find(
+    //   (session) => session.id === req.params.session_id
+    // );
+    // return res.json(completedSession);
+    return res.json(todo);
+    // returning the entire todo because we need to have the totalTime updated in the redux state
   } catch (err) {
     console.error(err.message);
     return res.status(500).send("Server Error");

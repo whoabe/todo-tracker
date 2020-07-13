@@ -4,12 +4,14 @@ import {
   GET_TODO,
   ADD_TODO,
   DELETE_TODO,
-  TOGGLE_TODO,
+  EDIT_TODO,
+  // TOGGLE_TODO,
   COMPLETE_SESSION,
   START_SESSION,
   TODO_ERROR,
   SET_SESSION,
   REMOVE_SESSION,
+  DELETE_SESSION,
 } from "./types";
 import { setAlert } from "../actions/alert";
 
@@ -120,6 +122,26 @@ export const getTodo = (id) => async (dispatch) => {
   }
 };
 
+// Edit todo
+export const editTodo = (todoId) => async (dispatch) => {
+  try {
+    const res = await api.put(`/todos/${todoId}`);
+
+    dispatch({
+      type: EDIT_TODO,
+      payload: {
+        todoId,
+        data: res.data,
+      },
+    });
+  } catch (err) {
+    dispatch({
+      type: TODO_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
 // Start Session
 export const startSession = (todoId, data) => async (dispatch) => {
   try {
@@ -152,12 +174,31 @@ export const completeSession = (todoId, sessionId, data) => async (
     const res = await api.put(`/todos/session/${todoId}/${sessionId}`, data);
     dispatch({
       type: COMPLETE_SESSION,
-      payload: { todoId, sessionId, data: res.data },
+      payload: { todoId, data: res.data },
+      // don't need sessionId in the reducer because we're updating the entire todo
+      // payload: { todoId, sessionId, data: res.data },
     });
     dispatch(setAlert("Session Completed", "success"));
     dispatch({
       type: REMOVE_SESSION,
     });
+  } catch (err) {
+    dispatch({
+      type: TODO_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
+// Delete Session
+export const deleteSession = (todoId, sessionId) => async (dispatch) => {
+  try {
+    await api.delete(`/todos/session/${todoId}/${sessionId}`);
+    dispatch({
+      type: DELETE_SESSION,
+      payload: { todoId, sessionId },
+    });
+    dispatch(setAlert("Session Removed", "success"));
   } catch (err) {
     dispatch({
       type: TODO_ERROR,
