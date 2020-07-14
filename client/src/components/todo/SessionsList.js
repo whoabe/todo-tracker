@@ -5,7 +5,7 @@ import { deleteTodo, deleteSession } from "../../actions/todo";
 import { removeTask } from "../../actions/task";
 import TodoText from "./TodoText";
 // import moment from "moment";
-import FormatTime from "../../utils/FormatTime";
+import FormatTime from "./FormatTime";
 
 // const msToTime = (ms) => {
 //   let seconds = Math.floor(ms / 1000);

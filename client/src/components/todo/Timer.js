@@ -1,7 +1,7 @@
 import React from "react";
 // import moment from "moment";
 import { connect } from "react-redux";
-import FormatTime from "../../utils/FormatTime";
+import FormatTime from "./FormatTime";
 
 const Timer = ({ time, mode, task }) => {
   const [elapsedTime] = time;
