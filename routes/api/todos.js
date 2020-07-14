@@ -266,7 +266,7 @@ router.delete("/session/:id/:session_id", auth, async (req, res) => {
     // need to check if there is an endTime, if yes, then subtract
     await todo.save();
 
-    return res.json(todo.sessions);
+    return res.json(todo);
   } catch (err) {
     console.error(err.message);
     return res.status(500).send("Server Error");

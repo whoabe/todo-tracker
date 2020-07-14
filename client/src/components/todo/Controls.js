@@ -64,7 +64,7 @@ const Controls = ({
 };
 
 const mapStateToProps = (state) => ({
-  task: state.task.task,
+  task: state.task,
   currentSession: state.currentSession,
 });
 

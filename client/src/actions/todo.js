@@ -12,6 +12,8 @@ import {
   SET_SESSION,
   REMOVE_SESSION,
   DELETE_SESSION,
+  EDIT_TASK,
+  REMOVE_TASK,
 } from "./types";
 import { setAlert } from "../actions/alert";
 
@@ -77,6 +79,9 @@ export const deleteTodo = (id) => async (dispatch) => {
       type: DELETE_TODO,
       payload: id,
     });
+    dispatch({
+      type: REMOVE_TASK,
+    });
 
     dispatch(setAlert("Todo Removed", "success"));
   } catch (err) {
@@ -123,12 +128,19 @@ export const getTodo = (id) => async (dispatch) => {
 };
 
 // Edit todo
-export const editTodo = (todoId) => async (dispatch) => {
+export const editTodo = (todoId, data) => async (dispatch) => {
   try {
-    const res = await api.put(`/todos/${todoId}`);
+    const res = await api.put(`/todos/${todoId}`, data);
 
     dispatch({
       type: EDIT_TODO,
+      payload: {
+        todoId,
+        data: res.data,
+      },
+    });
+    dispatch({
+      type: EDIT_TASK,
       payload: {
         todoId,
         data: res.data,
@@ -193,10 +205,10 @@ export const completeSession = (todoId, sessionId, data) => async (
 // Delete Session
 export const deleteSession = (todoId, sessionId) => async (dispatch) => {
   try {
-    await api.delete(`/todos/session/${todoId}/${sessionId}`);
+    const res = await api.delete(`/todos/session/${todoId}/${sessionId}`);
     dispatch({
       type: DELETE_SESSION,
-      payload: { todoId, sessionId },
+      payload: { todoId, data: res.data },
     });
     dispatch(setAlert("Session Removed", "success"));
   } catch (err) {

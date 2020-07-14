@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import useKeyPress from "../../hooks/useKeyPress";
 import useOnClickOutside from "../../hooks/useOnClickOutside";
+import { connect } from "react-redux";
+import { editTodo } from "../../actions/todo";
 
-const TodoText = ({ todo }) => {
+const TodoText = ({ todo, editTodo }) => {
   const [isInputActive, setIsInputActive] = useState(false);
   const [inputValue, setInputValue] = useState(todo.value);
 
@@ -17,6 +19,8 @@ const TodoText = ({ todo }) => {
   useOnClickOutside(wrapperRef, () => {
     if (isInputActive) {
       //   onSetText(inputValue);
+      const data = { value: inputValue };
+      editTodo(todo._id, data);
       setIsInputActive(false);
       console.log("useClickOutside");
     }
@@ -35,6 +39,8 @@ const TodoText = ({ todo }) => {
       // if Enter is pressed, save the text and case the editor
       if (enter) {
         // onSetText(inputValue);
+        const data = { value: inputValue };
+        editTodo(todo._id, data);
         console.log("enter key pressed");
         setIsInputActive(false);
       }
@@ -91,4 +97,6 @@ const TodoText = ({ todo }) => {
   );
 };
 
-export default TodoText;
+export default connect(null, {
+  editTodo,
+})(TodoText);

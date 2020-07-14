@@ -1,23 +1,21 @@
-import { SET_TASK, REMOVE_TASK } from "../actions/types";
+import { SET_TASK, REMOVE_TASK, EDIT_TASK } from "../actions/types";
 
-const initialState = {
-  task: null,
-};
+const initialState = null;
 
 export default function (state = initialState, action) {
   const { type, payload } = action;
 
   switch (type) {
     case SET_TASK:
-      return {
-        ...state,
-        task: payload,
-      };
+      return payload;
     case REMOVE_TASK:
-      return {
-        ...state,
-        task: null,
-      };
+      return initialState;
+    case EDIT_TASK:
+      if (state && state._id === payload.todoId) {
+        return payload.data;
+      } else {
+        return state;
+      }
     default:
       return state;
   }

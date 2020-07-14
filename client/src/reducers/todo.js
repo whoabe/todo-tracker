@@ -55,6 +55,7 @@ export default function (state = initialState, action) {
       };
     case COMPLETE_SESSION:
     case EDIT_TODO:
+    case DELETE_SESSION:
       return {
         ...state,
         todos: state.todos.map((todo) => {
@@ -68,23 +69,6 @@ export default function (state = initialState, action) {
         }),
       };
 
-    case DELETE_SESSION:
-      const todoIndex2 = state.todos.findIndex(
-        (todo) => todo._id === payload.todoId
-      );
-      const matchedTodo2 = state.todos[todoIndex2];
-      const updatedSessions2 = matchedTodo2.sessions.filter(
-        (session) => session._id !== payload.sessionId
-      );
-      const updatedTodos2 = state.todos;
-      updatedTodos2[todoIndex2].sessions = updatedSessions2;
-      return {
-        ...state,
-        todos: updatedTodos2,
-      };
-    // get the correct todo
-    // filter out the sesions
-    // update state w updated sessions and updated todos
     case DELETE_TODO:
       return {
         ...state,

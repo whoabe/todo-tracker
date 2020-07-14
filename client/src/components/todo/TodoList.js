@@ -22,10 +22,11 @@ const TodoList = ({
           <thead>
             <tr>
               <th />
+              <th />
               <th>Task</th>
               <th>Time</th>
               <th>Sessions</th>
-              <th />
+              {/* <th /> */}
               <th />
             </tr>
           </thead>

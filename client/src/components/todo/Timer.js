@@ -1,6 +1,7 @@
 import React from "react";
-import moment from "moment";
+// import moment from "moment";
 import { connect } from "react-redux";
+import FormatTime from "../../utils/FormatTime";
 
 const Timer = ({ time, mode, task }) => {
   const [elapsedTime] = time;
@@ -14,14 +15,15 @@ const Timer = ({ time, mode, task }) => {
       </div>
       <div className="lead">{currentMode}</div>
       <div className="elapsed-time x-large">
-        {moment(elapsedTime).format("mm:ss")}
+        {/* {moment(elapsedTime).format("mm:ss")} */}
+        <FormatTime elapsedTime={elapsedTime} />
       </div>
     </div>
   );
 };
 
 const mapStateToProps = (state) => ({
-  task: state.task.task,
+  task: state.task,
 });
 
 export default connect(mapStateToProps, null)(Timer);

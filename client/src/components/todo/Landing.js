@@ -167,7 +167,7 @@ const Landing = ({
 };
 
 const mapStateToProps = (state) => ({
-  task: state.task.task,
+  task: state.task,
   todo: state.todo,
   currentSession: state.currentSession,
 });

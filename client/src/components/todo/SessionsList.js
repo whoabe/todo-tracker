@@ -4,23 +4,30 @@ import { connect } from "react-redux";
 import { deleteTodo, deleteSession } from "../../actions/todo";
 import { removeTask } from "../../actions/task";
 import TodoText from "./TodoText";
+// import moment from "moment";
+import FormatTime from "../../utils/FormatTime";
 
-const msToTime = (ms) => {
-  let seconds = ms / 1000;
-  // 2- Extract hours:
-  let hours = parseInt(seconds / 3600); // 3,600 seconds in 1 hour
-  seconds = seconds % 3600; // seconds remaining after extracting hours
-  // 3- Extract minutes:
-  let minutes = parseInt(seconds / 60); // 60 seconds in 1 minute
-  // 4- Keep only seconds not extracted to minutes:
-  seconds = seconds % 60;
-  let output = hours + ":" + minutes + ":" + seconds;
-  return output;
-};
+// const msToTime = (ms) => {
+//   let seconds = Math.floor(ms / 1000);
+//   // 2- Extract hours:
+//   let hours = parseInt(seconds / 3600); // 3,600 seconds in 1 hour
+//   seconds = seconds % 3600; // seconds remaining after extracting hours
+//   // 3- Extract minutes:
+//   let minutes = parseInt(seconds / 60); // 60 seconds in 1 minute
+//   // 4- Keep only seconds not extracted to minutes:
+//   seconds = seconds % 60;
+//   let output = hours + ":" + minutes + ":" + seconds;
+//   return output;
+// };
 
 const toLocalTime = (UTCstring) => {
   let localTime = new Date(UTCstring)
-    .toLocaleString("en-us", { hour12: false })
+    // .toLocaleString("en-us", { hour12: false })
+    .toLocaleTimeString("en-us", {
+      hour12: false,
+      hour: "2-digit",
+      minute: "2-digit",
+    })
     .split(" ");
   return localTime;
 };
@@ -31,6 +38,7 @@ const SessionsList = ({
   handleSwitchTask,
   removeTask,
   deleteSession,
+  task,
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -46,6 +54,19 @@ const SessionsList = ({
 
   return [
     <tr key={todo._id}>
+      <td>
+        {task && task._id === todo._id ? (
+          <i
+            className="fas fa-caret-right fa-lg mx todo-selector-active"
+            onClick={() => handleSwitchTask(todo._id)}
+          ></i>
+        ) : (
+          <i
+            className="fas fa-caret-right fa-lg mx todo-selector-inactive"
+            onClick={() => handleSwitchTask(todo._id)}
+          ></i>
+        )}
+      </td>
       <td>
         <input type="checkbox" checked={todo.isCompleted} />
       </td>
@@ -64,7 +85,11 @@ const SessionsList = ({
           <input ref={inputRef} value={inputValue} onChange={e => {setInputValue(e.target.value);}} className={`inline-text_input inline-text_input--${isInputActive ? "active" : "hidden"}`} type="text"/>
         </span> */}
       </td>
-      <td>{msToTime(todo.totalTime)}</td>
+      {/* <td>{msToTime(todo.totalTime)}</td> */}
+      <td>
+        {/* {moment(todo.totalTime).format("mm:ss")} */}
+        <FormatTime elapsedTime={todo.totalTime} />
+      </td>
       <td>
         <div>
           <span className="todo-sessions">{todo.sessions.length}</span>
@@ -79,14 +104,15 @@ const SessionsList = ({
           ) : null}
         </div>
       </td>
-      <td>
+      {/* <td>
         <span className="mx edit-span">
           <i
             className="far fa-edit"
             onClick={() => console.log("edit button clicked")}
           ></i>
         </span>
-      </td>
+      </td> */}
+      <td></td>
       <td>
         <span className="mx trash-span">
           <i
@@ -104,16 +130,21 @@ const SessionsList = ({
       todo.sessions.map((session, index) => (
         <tr key={session._id}>
           <td></td>
+          <td></td>
           <td>{index + 1}</td>
-          <td>{msToTime(session.time)}</td>
+          <td>
+            {/* {msToTime(session.time)} */}
+            <FormatTime elapsedTime={session.time} />
+          </td>
           <td>{toLocalTime(session.startTime)}</td>
           <td>
-            <span className="mx edit-span">
+            {toLocalTime(session.endTime)}
+            {/* <span className="mx edit-span">
               <i
                 className="far fa-edit"
                 onClick={() => console.log("edit button clicked")}
               ></i>
-            </span>
+            </span> */}
           </td>
           <td>
             <span className="mx trash-span">
@@ -131,6 +162,12 @@ const SessionsList = ({
   ];
 };
 
-export default connect(null, { deleteTodo, deleteSession, removeTask })(
-  SessionsList
-);
+const mapStateToProps = (state) => ({
+  task: state.task,
+});
+
+export default connect(mapStateToProps, {
+  deleteTodo,
+  deleteSession,
+  removeTask,
+})(SessionsList);
