@@ -11,6 +11,7 @@ import {
   TODO_ERROR,
   SET_SESSION,
   REMOVE_SESSION,
+  EDIT_SESSION,
   DELETE_SESSION,
   EDIT_TASK,
   REMOVE_TASK,
@@ -193,6 +194,25 @@ export const completeSession = (todoId, sessionId, data) => async (
     dispatch(setAlert("Session Completed", "success"));
     dispatch({
       type: REMOVE_SESSION,
+    });
+  } catch (err) {
+    dispatch({
+      type: TODO_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
+//Edit Session
+export const editSession = (todoId, sessionId, data) => async (dispatch) => {
+  try {
+    const res = await api.put(
+      `/todos/session/edit/${todoId}/${sessionId}`,
+      data
+    );
+    dispatch({
+      type: EDIT_SESSION,
+      payload: { todoId, data: res.data },
     });
   } catch (err) {
     dispatch({

@@ -19,6 +19,7 @@ export const EDIT_TODO = "EDIT_TODO";
 export const TOGGLE_TODO = "TOGGLE_TODO";
 export const START_SESSION = "START_SESSION";
 export const COMPLETE_SESSION = "COMPLETE_SESSION";
+export const EDIT_SESSION = "EDIT_SESSION";
 export const DELETE_SESSION = "DELETE_SESSION";
 export const TODO_ERROR = "TODO_ERROR";
 // Tasks

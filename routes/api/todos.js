@@ -237,6 +237,62 @@ router.put("/session/:id/:session_id", auth, async (req, res) => {
     return res.status(500).send("Server Error");
   }
 });
+
+///////////////
+// @route    PUT api/todos/session/edit/:id/:session_id
+// @desc     Edit session
+// @access   Private
+router.put("/session/edit/:id/:session_id", auth, async (req, res) => {
+  try {
+    const todo = await Todo.findById(req.params.id);
+    // Pull out session
+    const session = todo.sessions.find(
+      (session) => session.id === req.params.session_id
+    );
+    // Check user
+    if (todo.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+    // Make sure session exists
+    if (!session) {
+      return res.status(404).json({ msg: "Session does not exist" });
+    }
+
+    // check for start/endTime and add them in
+    // throw in a check that makes sure the endtime is greater than the startTime
+    if (req.body.startTime) {
+      if (req.body.startTime > session.endTime) {
+        return res
+          .status(403)
+          .json({ msg: "startTime cannot be greater than the endTime" });
+      }
+      session.startTime = req.body.startTime;
+    } else if (req.body.endTime) {
+      if (req.body.endTime < session.startTime) {
+        return res
+          .status(403)
+          .json({ msg: "EndTime cannot be less than the startTime" });
+      }
+      session.endTime = req.body.endTime;
+    }
+    session.time = session.endTime - session.startTime;
+    todo.totalTime += session.endTime - session.startTime;
+    await todo.save();
+
+    // if you want to return the saved/completed session:
+    // const completedSession = todo.sessions.find(
+    //   (session) => session.id === req.params.session_id
+    // );
+    // return res.json(completedSession);
+    return res.json(todo);
+    // returning the entire todo because we need to have the totalTime updated in the redux state
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server Error");
+  }
+});
+//////////////
+
 // @route    DELETE api/todos/session/:id/:session_id
 // @desc     Delete session
 // @access   Private
