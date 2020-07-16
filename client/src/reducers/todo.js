@@ -7,6 +7,7 @@ import {
   START_SESSION,
   COMPLETE_SESSION,
   DELETE_SESSION,
+  EDIT_SESSION,
   TODO_ERROR,
   EDIT_TODO,
 } from "../actions/types";
@@ -56,6 +57,7 @@ export default function (state = initialState, action) {
     case COMPLETE_SESSION:
     case EDIT_TODO:
     case DELETE_SESSION:
+    case EDIT_SESSION:
       return {
         ...state,
         todos: state.todos.map((todo) => {

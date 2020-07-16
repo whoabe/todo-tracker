@@ -222,7 +222,9 @@ router.put("/session/:id/:session_id", auth, async (req, res) => {
     // add endTime to Todo
     session.endTime = req.body.endTime;
     session.time = session.endTime - session.startTime;
-    todo.totalTime += session.endTime - session.startTime;
+    todo.totalTime = todo.sessions.reduce((sessionTime, session) => {
+      return sessionTime + session.time;
+    }, 0);
     await todo.save();
 
     // if you want to return the saved/completed session:
@@ -260,23 +262,31 @@ router.put("/session/edit/:id/:session_id", auth, async (req, res) => {
 
     // check for start/endTime and add them in
     // throw in a check that makes sure the endtime is greater than the startTime
-    if (req.body.startTime) {
-      if (req.body.startTime > session.endTime) {
-        return res
-          .status(403)
-          .json({ msg: "startTime cannot be greater than the endTime" });
-      }
+    if (
+      req.body.startTime &&
+      Date.parse(req.body.startTime) > Date.parse(session.endTime)
+    ) {
+      return res
+        .status(403)
+        .json({ msg: "startTime cannot be greater than the endTime" });
+    } else if (req.body.startTime) {
       session.startTime = req.body.startTime;
+    }
+    if (
+      req.body.endTime &&
+      Date.parse(req.body.endTime) < Date.parse(session.startTime)
+    ) {
+      return res
+        .status(403)
+        .json({ msg: "endTime cannot be less than the startTime" });
     } else if (req.body.endTime) {
-      if (req.body.endTime < session.startTime) {
-        return res
-          .status(403)
-          .json({ msg: "EndTime cannot be less than the startTime" });
-      }
       session.endTime = req.body.endTime;
     }
+
     session.time = session.endTime - session.startTime;
-    todo.totalTime += session.endTime - session.startTime;
+    todo.totalTime = todo.sessions.reduce((sessionTime, session) => {
+      return sessionTime + session.time;
+    }, 0);
     await todo.save();
 
     // if you want to return the saved/completed session:
@@ -317,7 +327,9 @@ router.delete("/session/:id/:session_id", auth, async (req, res) => {
       ({ id }) => id !== req.params.session_id
     );
     if (session.endTime) {
-      todo.totalTime -= session.endTime - session.startTime;
+      todo.totalTime = todo.sessions.reduce((sessionTime, session) => {
+        return sessionTime + session.time;
+      }, 0);
     }
     // need to check if there is an endTime, if yes, then subtract
     await todo.save();

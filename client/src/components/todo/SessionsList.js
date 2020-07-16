@@ -4,8 +4,11 @@ import { connect } from "react-redux";
 import { deleteTodo, deleteSession } from "../../actions/todo";
 import { removeTask } from "../../actions/task";
 import TodoText from "./TodoText";
+import SessionStartTime from "./SessionStartTime";
+import SessionEndTime from "./SessionEndTime";
 // import moment from "moment";
 import FormatTime from "./FormatTime";
+import toLocalTime from "../../utils/toLocalTime";
 
 // const msToTime = (ms) => {
 //   let seconds = Math.floor(ms / 1000);
@@ -20,17 +23,17 @@ import FormatTime from "./FormatTime";
 //   return output;
 // };
 
-const toLocalTime = (UTCstring) => {
-  let localTime = new Date(UTCstring)
-    // .toLocaleString("en-us", { hour12: false })
-    .toLocaleTimeString("en-us", {
-      hour12: false,
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-    .split(" ");
-  return localTime;
-};
+// const toLocalTime = (UTCstring) => {
+//   let localTime = new Date(UTCstring)
+//     // .toLocaleString("en-us", { hour12: false })
+//     .toLocaleTimeString("en-us", {
+//       hour12: false,
+//       hour: "2-digit",
+//       minute: "2-digit",
+//     })
+//     .split(" ");
+//   return localTime;
+// };
 
 const SessionsList = ({
   deleteTodo,
@@ -136,9 +139,13 @@ const SessionsList = ({
             {/* {msToTime(session.time)} */}
             <FormatTime elapsedTime={session.time} />
           </td>
-          <td>{toLocalTime(session.startTime)}</td>
+          {/* <td>{toLocalTime(session.startTime)}</td> */}
           <td>
-            {toLocalTime(session.endTime)}
+            <SessionStartTime session={session} todoId={todo._id} />
+          </td>
+          <td>
+            <SessionEndTime session={session} todoId={todo._id} />
+            {/* {toLocalTime(session.endTime)} */}
             {/* <span className="mx edit-span">
               <i
                 className="far fa-edit"

@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import useKeyPress from "../../hooks/useKeyPress";
 import useOnClickOutside from "../../hooks/useOnClickOutside";
 import { connect } from "react-redux";
-import { editSession } from "../../actions/session";
+import { editSession } from "../../actions/todo";
+import toLocalTime from "../../utils/toLocalTime";
+import moment from "moment";
 
-const SessionStartTime = ({ session, editSession }) => {
+const SessionStartTime = ({ session, editSession, todoId }) => {
   const [isInputActive, setIsInputActive] = useState(false);
-  const [inputValue, setInputValue] = useState(session.starTime);
+  const [inputValue, setInputValue] = useState(session.startTime);
 
   const wrapperRef = useRef(null);
   const textRef = useRef(null);
@@ -19,8 +21,10 @@ const SessionStartTime = ({ session, editSession }) => {
   useOnClickOutside(wrapperRef, () => {
     if (isInputActive) {
       //   onSetText(inputValue);
+      //   const dateNowStartTime = JSON.stringify(Date.now(inputValue));
+      //   const data = { startTime: dateNowStartTime };
       const data = { startTime: inputValue };
-      editSession(session.startTime, data);
+      editSession(todoId, session._id, data);
       setIsInputActive(false);
       console.log("useClickOutside");
     }
@@ -40,7 +44,7 @@ const SessionStartTime = ({ session, editSession }) => {
       if (enter) {
         // onSetText(inputValue);
         const data = { startTime: inputValue };
-        editSesssion(session.startTime, data);
+        editSession(todoId, session._id, data);
         console.log("enter key pressed");
         setIsInputActive(false);
       }
@@ -62,16 +66,20 @@ const SessionStartTime = ({ session, editSession }) => {
           !isInputActive ? "active" : "hidden"
         }`}
       >
-        {session.startTime}
+        {toLocalTime(session.startTime)}
       </span>
       <input
-        type="text"
+        type="datetime-local"
         ref={inputRef}
-        style={{ width: "8rem" }}
-        maxLength="15"
-        value={inputValue}
+        max={moment(session.endTime).local().format("YYYY-MM-DDTHH:mm:ss")}
+        // style={{ width: "8rem" }}
+        value={moment(inputValue).local().format("YYYY-MM-DDTHH:mm:ss")}
         onChange={(e) => {
-          setInputValue(e.target.value);
+          if (e.target.value > session.endTime) {
+            setInputValue(inputValue);
+          } else {
+            setInputValue(e.target.value);
+          }
         }}
         className={`inline-text_input inline-text_input--${
           isInputActive ? "active" : "hidden"
