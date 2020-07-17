@@ -58,6 +58,7 @@ export default function (state = initialState, action) {
     case EDIT_TODO:
     case DELETE_SESSION:
     case EDIT_SESSION:
+    case TOGGLE_TODO:
       return {
         ...state,
         todos: state.todos.map((todo) => {
@@ -77,8 +78,6 @@ export default function (state = initialState, action) {
         todos: state.todos.filter((todo) => todo._id !== payload),
         loading: false,
       };
-    case TOGGLE_TODO:
-      return state;
     case TODO_ERROR:
       return {
         ...state,

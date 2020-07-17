@@ -6,7 +6,7 @@ import { editSession } from "../../actions/todo";
 import toLocalTime from "../../utils/toLocalTime";
 import moment from "moment";
 
-const SessionStartTime = ({ session, editSession, todoId }) => {
+const SessionStartTime = ({ session, editSession, todoId, currentSession }) => {
   const [isInputActive, setIsInputActive] = useState(false);
   const [inputValue, setInputValue] = useState(session.startTime);
 
@@ -16,6 +16,14 @@ const SessionStartTime = ({ session, editSession, todoId }) => {
 
   const enter = useKeyPress("Enter");
   const esc = useKeyPress("Escape");
+
+  const currentSessionCheck = () => {
+    if (currentSession && currentSession._id === session._id) {
+      return;
+    } else {
+      setIsInputActive(true);
+    }
+  };
 
   // check to see if the user clicked outside of this component
   useOnClickOutside(wrapperRef, () => {
@@ -61,7 +69,7 @@ const SessionStartTime = ({ session, editSession, todoId }) => {
     <span className="inline-text" ref={wrapperRef}>
       <span
         ref={textRef}
-        onClick={() => setIsInputActive(true)}
+        onClick={() => currentSessionCheck()}
         className={`inline-text_copy inline-text_copy--${
           !isInputActive ? "active" : "hidden"
         }`}
@@ -75,7 +83,15 @@ const SessionStartTime = ({ session, editSession, todoId }) => {
         // style={{ width: "8rem" }}
         value={moment(inputValue).local().format("YYYY-MM-DDTHH:mm:ss")}
         onChange={(e) => {
-          if (e.target.value > session.endTime) {
+          //   console.log("e.target.value " + e.target.value);
+          //   console.log(
+          //     "endtime " +
+          //       moment(session.endTime).local().format("YYYY-MM-DDTHH:mm:ss")
+          //   );
+          if (
+            e.target.value >
+            moment(session.endTime).local().format("YYYY-MM-DDTHH:mm:ss")
+          ) {
             setInputValue(inputValue);
           } else {
             setInputValue(e.target.value);
@@ -89,6 +105,10 @@ const SessionStartTime = ({ session, editSession, todoId }) => {
   );
 };
 
-export default connect(null, {
+const mapStateToProps = (state) => ({
+  currentSession: state.currentSession,
+});
+
+export default connect(mapStateToProps, {
   editSession,
 })(SessionStartTime);

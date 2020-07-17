@@ -61,6 +61,9 @@ const TodoText = ({ todo, editTodo }) => {
         className={`inline-text_copy inline-text_copy--${
           !isInputActive ? "active" : "hidden"
         }`}
+        style={{
+          textDecoration: todo.completed ? "line-through" : "",
+        }}
       >
         {todo.value}
       </span>

@@ -56,37 +56,48 @@ const SessionEndTime = ({ session, editSession, todoId }) => {
       }
     }
   }, [enter, esc]); // watch the Enter and Escape key presses
-
-  return (
-    <span className="inline-text" ref={wrapperRef}>
-      <span
-        ref={textRef}
-        onClick={() => setIsInputActive(true)}
-        className={`inline-text_copy inline-text_copy--${
-          !isInputActive ? "active" : "hidden"
-        }`}
-      >
-        {toLocalTime(session.endTime)}
+  if (session.endTime) {
+    return (
+      <span className="inline-text" ref={wrapperRef}>
+        <span
+          ref={textRef}
+          onClick={() => setIsInputActive(true)}
+          className={`inline-text_copy inline-text_copy--${
+            !isInputActive ? "active" : "hidden"
+          }`}
+        >
+          {toLocalTime(session.endTime)}
+        </span>
+        <input
+          type="datetime-local"
+          ref={inputRef}
+          // min={moment(session.startTime).local().format("YYYY-MM-DDTHH:mm:ss")}
+          // style={{ width: "8rem" }}
+          value={moment(inputValue).local().format("YYYY-MM-DDTHH:mm:ss")}
+          onChange={(e) => {
+            //   console.log("e.target.value " + e.target.value);
+            //   console.log(
+            //     "session.startTime " +
+            //       moment(session.startTime).local().format("YYYY-MM-DDTHH:mm:ss")
+            //   );
+            if (
+              e.target.value <
+              moment(session.endTime).local().format("YYYY-MM-DDTHH:mm:ss")
+            ) {
+              setInputValue(inputValue);
+            } else {
+              setInputValue(e.target.value);
+            }
+          }}
+          className={`inline-text_input inline-text_input--${
+            isInputActive ? "active" : "hidden"
+          }`}
+        />
       </span>
-      <input
-        type="datetime-local"
-        ref={inputRef}
-        // min={moment(session.startTime).local().format("YYYY-MM-DDTHH:mm:ss")}
-        // style={{ width: "8rem" }}
-        value={moment(inputValue).local().format("YYYY-MM-DDTHH:mm:ss")}
-        onChange={(e) => {
-          //   if (e.target.value < session.startTime) {
-          //     setInputValue(inputValue);
-          //   } else {
-          setInputValue(e.target.value);
-          //   }
-        }}
-        className={`inline-text_input inline-text_input--${
-          isInputActive ? "active" : "hidden"
-        }`}
-      />
-    </span>
-  );
+    );
+  } else {
+    return <span>-</span>;
+  }
 };
 
 export default connect(null, {

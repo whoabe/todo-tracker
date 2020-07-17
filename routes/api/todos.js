@@ -88,12 +88,34 @@ router.put("/:id", auth, async (req, res) => {
   }
 });
 
+// @route    PUT api/todos/session/toggle/:id/
+// @desc     Toggle Todo completed
+// @access   Private
+router.put("/toggle/:id", auth, async (req, res) => {
+  try {
+    // pull out todo
+    const todo = await Todo.findById(req.params.id);
+    // Check user
+    if (todo.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+    // update the name
+    todo.completed = !todo.completed;
+    await todo.save();
+    return res.json(todo);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server Error");
+  }
+});
+
 // @route    DELETE api/todos/:id
 // @desc     Delete a todo
 // @access   Private
 router.delete("/:id", [auth, checkObjectId("id")], async (req, res) => {
   try {
     const todo = await Todo.findById(req.params.id);
+    const todos = await Todo.find().sort({ date: -1 });
 
     // Check user
     if (todo.user.toString() !== req.user.id) {
@@ -102,7 +124,7 @@ router.delete("/:id", [auth, checkObjectId("id")], async (req, res) => {
 
     await todo.remove();
 
-    res.json({ msg: "Todo removed" });
+    return res.json(todos);
   } catch (err) {
     console.error(err.message);
 

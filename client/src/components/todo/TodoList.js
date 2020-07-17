@@ -31,65 +31,17 @@ const TodoList = ({
             </tr>
           </thead>
           <tbody>
-            {todos.map((todo) => (
-              <SessionsList
-                todo={todo}
-                key={todo._id}
-                handleSwitchTask={handleSwitchTask}
-              />
-              // <div key={todo._id} className="todo-row">
-              //   <input
-              //     type="checkbox"
-              //     checked={todo.isCompleted}
-              //   />
-              // <span
-              //   className="todo-text mx"
-              //   style={{
-              //     textDecoration: todo.isCompleted ? "line-through" : "",
-              //   }}
-              //   onClick={() => handleSwitchTask(todo._id)}
-              // >
-              //     {todo.value}
-              //   </span>
-              // <span className="todo-sessions mx">
-              //   {todo.sessions.length}
-              // </span>
-              // {todo.sessions.length > 0 && (
-              //   <span className="mx dropdown-span">
-              //     <i
-              //       className="fas fa-angle-down"
-              //       onClick={() => ToggleSessionList(todo._id)}
-              //     ></i>
-              //   </span>
-              // )}
-              //   <span className="mx edit-span">
-              //     <i
-              //       className="far fa-edit"
-              //       onClick={() => console.log("edit button clicked")}
-              //     ></i>
-              //   </span>
-              // <span className="mx trash-span">
-              //   <i
-              //     className="far fa-trash-alt"
-              //     onClick={() => {
-              //       deleteTodo(todo._id);
-              //       removeTask();
-              //     }}
-              //   ></i>
-              // </span>
-              //   <div>
-              //     {todo.sessions.length > 0
-              //       ? todo.sessions.map((session, index) => (
-              //           <div key={session._id}>
-              //             <span>{index + 1}</span>
-              //             <span>{session.startTime}</span>
-              //             <span>{session.endTime}</span>
-              //           </div>
-              //         ))
-              //       : null}
-              //   </div>
-              // </div>
-            ))}
+            {todos.map((todo) => {
+              if (!todo.completed) {
+                return (
+                  <SessionsList
+                    todo={todo}
+                    key={todo._id}
+                    handleSwitchTask={handleSwitchTask}
+                  />
+                );
+              }
+            })}
           </tbody>
         </table>
       ) : null}

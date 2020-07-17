@@ -6,6 +6,7 @@ import useInterval from "../../hooks/useInterval";
 import Timer from "./Timer";
 import Controls from "./Controls";
 import TodoList from "./TodoList";
+import CompletedTodoList from "./CompletedTodoList";
 import TodoForm from "./TodoForm";
 import { setAlert } from "../../actions/alert";
 import { setTask } from "../../actions/task";
@@ -16,7 +17,7 @@ const Landing = ({
   setTask,
   task,
   completeSession,
-  todo: { todos },
+  todos,
   currentSession,
   startSession,
 }) => {
@@ -156,10 +157,22 @@ const Landing = ({
           //   }
           // }}
           />
-          {/* <h1 className="x-large">Todo Tracker</h1>
-          <p className="lead">
-            Track your todo items and get analytics on them
-          </p> */}
+          {/* if there is a completed item */}
+          {todos.map((todo) => {
+            if (todo.completed) {
+              return [
+                <hr
+                  style={{
+                    width: "15rem",
+                    marginTop: "1rem",
+                    marginBottom: "0.5rem",
+                  }}
+                  key="1"
+                />,
+                <CompletedTodoList key="2" />,
+              ];
+            }
+          })}
         </div>
       </div>
     </section>
@@ -168,7 +181,7 @@ const Landing = ({
 
 const mapStateToProps = (state) => ({
   task: state.task,
-  todo: state.todo,
+  todos: state.todo.todos,
   currentSession: state.currentSession,
 });
 

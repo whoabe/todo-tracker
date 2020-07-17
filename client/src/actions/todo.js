@@ -5,7 +5,7 @@ import {
   ADD_TODO,
   DELETE_TODO,
   EDIT_TODO,
-  // TOGGLE_TODO,
+  TOGGLE_TODO,
   COMPLETE_SESSION,
   START_SESSION,
   TODO_ERROR,
@@ -15,6 +15,7 @@ import {
   DELETE_SESSION,
   EDIT_TASK,
   REMOVE_TASK,
+  SET_TASK,
 } from "./types";
 import { setAlert } from "../actions/alert";
 
@@ -27,6 +28,12 @@ export const getTodos = () => async (dispatch) => {
       type: GET_TODOS,
       payload: res.data,
     });
+    if (res.data && res.data.length > 0) {
+      dispatch({
+        type: SET_TASK,
+        payload: res.data[0],
+      });
+    }
   } catch (err) {
     dispatch({
       type: TODO_ERROR,
@@ -74,7 +81,7 @@ export const getTodos = () => async (dispatch) => {
 // Delete todo
 export const deleteTodo = (id) => async (dispatch) => {
   try {
-    await api.delete(`/todos/${id}`);
+    const res = await api.delete(`/todos/${id}`);
 
     dispatch({
       type: DELETE_TODO,
@@ -83,6 +90,13 @@ export const deleteTodo = (id) => async (dispatch) => {
     dispatch({
       type: REMOVE_TASK,
     });
+    if (res.data && res.data.length > 0) {
+      console.log(res.data);
+      dispatch({
+        type: SET_TASK,
+        payload: res.data[0],
+      });
+    }
 
     dispatch(setAlert("Todo Removed", "success"));
   } catch (err) {
@@ -102,6 +116,11 @@ export const addTodo = (formData) => async (dispatch) => {
       type: ADD_TODO,
       payload: res.data,
     });
+    dispatch({
+      type: SET_TASK,
+      payload: res.data,
+    });
+
     dispatch(setAlert("Todo Created", "success"));
   } catch (err) {
     dispatch({
@@ -142,6 +161,26 @@ export const editTodo = (todoId, data) => async (dispatch) => {
     });
     dispatch({
       type: EDIT_TASK,
+      payload: {
+        todoId,
+        data: res.data,
+      },
+    });
+  } catch (err) {
+    dispatch({
+      type: TODO_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
+// toggle complete todo
+export const toggleTodo = (todoId) => async (dispatch) => {
+  try {
+    const res = await api.put(`/todos/toggle/${todoId}`);
+
+    dispatch({
+      type: TOGGLE_TODO,
       payload: {
         todoId,
         data: res.data,

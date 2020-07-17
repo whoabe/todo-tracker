@@ -7,7 +7,7 @@ import SessionStartTime from "./SessionStartTime";
 import SessionEndTime from "./SessionEndTime";
 import FormatTime from "./FormatTime";
 
-const SessionsList = ({
+const CompletedTodoRow = ({
   deleteTodo,
   todo,
   handleSwitchTask,
@@ -20,19 +20,6 @@ const SessionsList = ({
 
   return [
     <tr key={todo._id}>
-      <td>
-        {task && task._id === todo._id ? (
-          <i
-            className="fas fa-caret-right fa-lg mx todo-selector-active"
-            onClick={() => handleSwitchTask(todo._id)}
-          ></i>
-        ) : (
-          <i
-            className="fas fa-caret-right fa-lg mx todo-selector-inactive"
-            onClick={() => handleSwitchTask(todo._id)}
-          ></i>
-        )}
-      </td>
       <td>
         <input
           type="checkbox"
@@ -126,4 +113,4 @@ export default connect(mapStateToProps, {
   deleteSession,
   removeTask,
   toggleTodo,
-})(SessionsList);
+})(CompletedTodoRow);
