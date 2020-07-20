@@ -31,7 +31,27 @@ const TodoSchema = new Schema({
       },
     },
   ],
+  breaks: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+      },
+      startTime: {
+        type: Date,
+      },
+      endTime: {
+        type: Date,
+      },
+      time: {
+        type: Number,
+      },
+    },
+  ],
+
   totalTime: {
+    type: Number,
+  },
+  totalBreakTime: {
     type: Number,
   },
 });

@@ -94,7 +94,7 @@ export const deleteTodo = (id) => async (dispatch) => {
       console.log(res.data);
       dispatch({
         type: SET_TASK,
-        payload: res.data[0],
+        payload: res.data[res.data.length - 1],
       });
     }
 
