@@ -22,7 +22,6 @@ const TodoText = ({ todo, editTodo }) => {
       const data = { value: inputValue };
       editTodo(todo._id, data);
       setIsInputActive(false);
-      console.log("useClickOutside");
     }
   });
 
@@ -41,16 +40,15 @@ const TodoText = ({ todo, editTodo }) => {
         // onSetText(inputValue);
         const data = { value: inputValue };
         editTodo(todo._id, data);
-        console.log("enter key pressed");
         setIsInputActive(false);
       }
       // if Escape is pressed, revert the text and close the editor
       if (esc) {
-        console.log("esc key pressed");
         setInputValue(todo.value);
         setIsInputActive(false);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enter, esc]); // watch the Enter and Escape key presses
 
   return (
@@ -70,9 +68,6 @@ const TodoText = ({ todo, editTodo }) => {
       <input
         type="text"
         ref={inputRef}
-        // set the width to the input length multiplied by the x height
-        // it's not quite right but gets it close
-        //   style={{ width: Math.ceil(inputValue.length * 0.9) + "ex" }}
         style={{ width: "8rem" }}
         maxLength="15"
         value={inputValue}
@@ -84,19 +79,6 @@ const TodoText = ({ todo, editTodo }) => {
         }`}
       />
     </span>
-
-    // <span className="inline-text" ref={wrapperRef}>
-    //     <span
-    //         className="todo-text"
-    //         style={{
-    //             textDecoration: todo.isCompleted ? "line-through" : "",
-    //         }}
-    //         onClick={() => handleSwitchTask(todo._id)}
-    //     >
-    //         {todo.value}
-    //     </span>
-    //     <input ref={inputRef} value={inputValue} onChange={e => { setInputValue(e.target.value); }} className={`inline-text_input inline-text_input--${isInputActive ? "active" : "hidden"}`} type="text" />
-    // </span>
   );
 };
 

@@ -33,6 +33,7 @@ const CompletedTodoList = ({ todos }) => {
               if (todo.completed) {
                 return <CompletedTodoRow todo={todo} key={todo._id} />;
               }
+              return null;
             })}
           </tbody>
         ) : null}

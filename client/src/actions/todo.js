@@ -61,7 +61,6 @@ export const deleteTodo = (id) => async (dispatch) => {
       type: REMOVE_TASK,
     });
     if (res.data && res.data.length > 0) {
-      console.log(res.data);
       dispatch({
         type: SET_TASK,
         payload: res.data[res.data.length - 1],
@@ -159,13 +158,6 @@ export const toggleTodo = (todoId) => async (dispatch) => {
     dispatch({
       type: REMOVE_TASK,
     });
-    // if (res.data && res.data.length > 0) {
-    //   console.log(res.data);
-    //   dispatch({
-    //     type: SET_TASK,
-    //     payload: res.data[res.data.length - 1],
-    //   });
-    // }
   } catch (err) {
     dispatch({
       type: TODO_ERROR,
@@ -179,7 +171,6 @@ export const startSession = (todoId, data) => async (dispatch) => {
   try {
     const res = await api.post(`/todos/session/${todoId}`, data);
     // adds a session to the todo
-    console.log("todoId: " + todoId);
     dispatch({
       type: START_SESSION,
       payload: { todoId, data: res.data },
@@ -264,7 +255,6 @@ export const startBreak = (todoId, data) => async (dispatch) => {
   try {
     const res = await api.post(`/todos/breaks/${todoId}`, data);
     // adds a session to the todo
-    console.log("todoId: " + todoId);
     dispatch({
       type: START_BREAK,
       payload: { todoId, data: res.data },

@@ -352,10 +352,8 @@ router.post(
       todo.breaks.unshift(newBreak);
 
       await todo.save();
-      res.json(todo);
-      //
-      // const currentSession = todo.sessions[0];
-      // res.json(currentSession);
+      const currentBreak = todo.breaks[0];
+      res.json(currentBreak);
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");
@@ -385,18 +383,11 @@ router.put("/breaks/:id/:break_id", auth, async (req, res) => {
     // add endTime to Todo
     breakk.endTime = req.body.endTime;
     breakk.time = breakk.endTime - breakk.startTime;
-    breakk.totalTime = todo.breaks.reduce((breakTime, breakk) => {
+    todo.totalBreakTime = todo.breaks.reduce((breakTime, breakk) => {
       return breakTime + breakk.time;
     }, 0);
     await todo.save();
-
-    // if you want to return the saved/completed session:
-    // const completedSession = todo.sessions.find(
-    //   (session) => session.id === req.params.session_id
-    // );
-    // return res.json(completedSession);
     return res.json(todo);
-    // returning the entire todo because we need to have the totalTime updated in the redux state
   } catch (err) {
     console.error(err.message);
     return res.status(500).send("Server Error");
@@ -447,7 +438,7 @@ router.put("/breaks/edit/:id/:break_id", auth, async (req, res) => {
     }
 
     breakk.time = breakk.endTime - breakk.startTime;
-    todo.totalTime = todo.breaks.reduce((breakTime, breakk) => {
+    todo.totalBreakTime = todo.breaks.reduce((breakTime, breakk) => {
       return breakTime + breakk.time;
     }, 0);
     await todo.save();

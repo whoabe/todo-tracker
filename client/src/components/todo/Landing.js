@@ -34,49 +34,17 @@ const Landing = ({
   });
   const [mode, setMode] = useState("timer");
   const [isTimerActive, setIsTimerActive] = useState(false);
-  // const [currentTask, setCurrentTask] = useState(null);
   const [timerTime, setTimerTime] = useState(0);
   const [showCompletedTodoList, setShowCompletedTodoList] = useState(false);
-  // todo stuff
-  // const {
-  //   todos,
-  //   // addTodo,
-  //   toggleTodo,
-  //   // completeSession,
-  // } = useTodoState([
-  //   {
-  //     id: 1,
-  //     text: "task 1",
-  //     isCompleted: false,
-  //     totalTime: 25,
-  //     sessions: [
-  //       {
-  //         sessionID: 1,
-  //         length: 25,
-  //         startTime: "12:00",
-  //         endTime: "12:25",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: 2,
-  //     text: "task 2",
-  //     isCompleted: true,
-  //     sessions: [],
-  //     totalTime: 0,
-  //   },
-  // ]);
 
   useInterval(
     () => setTimerTime(timerTime + 1000),
     isTimerActive ? 1000 : null
-    // console.log(timerTime)
   );
 
   const checkIfCompletedTask = (todos) => {
     if (todos && todos.find((todo) => todo.completed === true)) {
       setShowCompletedTodoList(true);
-      // console.log(showCompletedTodoList);
     }
   };
 
@@ -86,11 +54,19 @@ const Landing = ({
     return data;
   };
 
+  const completeBreakData = () => {
+    const breakEndData = { endTime: JSON.stringify(Date.now()) };
+    return breakEndData;
+  };
+
   const handleStop = () => {
     setIsTimerActive(false);
     // need to have if currentSession === null, completeBreak()
     if (currentSession) {
       completeSession(task._id, currentSession._id, completeSessionData());
+    }
+    if (currentBreak) {
+      completeBreak(task._id, currentBreak._id, completeBreakData());
     }
     setMode("timer");
     setTimerTime(0);
@@ -100,10 +76,8 @@ const Landing = ({
     setIsTimerActive(false);
     // completeSession(timerTime, task, mode);
     if (currentSession != null) {
-      console.log("complete session");
       completeSession(task._id, currentSession._id, completeSessionData());
     } else {
-      console.log("start session");
       const startTime = JSON.stringify(Date.now());
       const data = { startTime: startTime };
       startSession(task._id, data);
@@ -117,14 +91,11 @@ const Landing = ({
       startBreak(task._id, breakData);
     } else if (mode === "break") {
       // need the current breakId in here
-      const breakEndData = { endTime: JSON.stringify(Date.now()) };
-      completeBreak(task._id, currentBreak._id, breakEndData);
+      completeBreak(task._id, currentBreak._id, completeBreakData());
       setMode("timer");
       setTimerTime(0);
       setIsTimerActive(true);
     }
-    // can shorten this code if we just change the state name to isModeTimer or something like that
-    // i guess having modes break and timer make it easier to read
   };
 
   const handleSwitchTask = (id) => {
@@ -145,7 +116,6 @@ const Landing = ({
     // checks if there is a current task, otherwise setAlert
     // debugger;
     if (task == null) {
-      console.log("currentTask is " + task);
       setAlert("No task selected", "danger");
       return false;
     } else {
@@ -161,17 +131,12 @@ const Landing = ({
           <Controls
             checkCurrentTask={checkCurrentTask}
             isTimerActive={[isTimerActive, setIsTimerActive]}
-            // handleReset={handleReset}
             timerTime={timerTime}
-            // breakTime={breakTime}
             mode={[mode, setMode]}
             handleStop={handleStop}
             handleSwitchMode={handleSwitchMode}
           />
-          <TodoList
-            // toggleTodo={toggleTodo}
-            handleSwitchTask={handleSwitchTask}
-          />
+          <TodoList handleSwitchTask={handleSwitchTask} />
           <TodoForm
           // saveTodo={(todoText) => {
           //   const trimmedText = todoText.trim();
@@ -181,24 +146,6 @@ const Landing = ({
           //   }
           // }}
           />
-          {/* if there is a completed item */}
-          {/* if there is a completed item, showCompletedItems = True
-          if showCompletedItems=True, show the CompletedTodoList */}
-          {/* {todos.map((todo) => {
-            if (todo.completed) {
-              return [
-                <hr
-                  style={{
-                    width: "15rem",
-                    marginTop: "1rem",
-                    marginBottom: "0.5rem",
-                  }}
-                  key="1"
-                />,
-                <CompletedTodoList key="2" />,
-              ];
-            }
-          })} */}
           {showCompletedTodoList
             ? [
                 <hr

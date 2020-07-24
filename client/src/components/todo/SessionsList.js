@@ -44,18 +44,6 @@ const SessionsList = ({
       </td>
       <td>
         <TodoText todo={todo} />
-        {/* <span className="inline-text" ref={wrapperRef}>
-          <span
-            className="todo-text"
-            style={{
-              textDecoration: todo.isCompleted ? "line-through" : "",
-            }}
-            onClick={() => handleSwitchTask(todo._id)}
-            >
-            {todo.value}
-          </span>
-          <input ref={inputRef} value={inputValue} onChange={e => {setInputValue(e.target.value);}} className={`inline-text_input inline-text_input--${isInputActive ? "active" : "hidden"}`} type="text"/>
-        </span> */}
       </td>
       <td>
         <FormatTime elapsedTime={todo.totalTime} />
@@ -86,7 +74,6 @@ const SessionsList = ({
           <i
             className="far fa-trash-alt"
             onClick={() => {
-              console.log("delete task");
               deleteTodo(todo._id);
               removeTask();
             }}

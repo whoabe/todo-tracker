@@ -28,13 +28,9 @@ const SessionStartTime = ({ session, editSession, todoId, currentSession }) => {
   // check to see if the user clicked outside of this component
   useOnClickOutside(wrapperRef, () => {
     if (isInputActive) {
-      //   onSetText(inputValue);
-      //   const dateNowStartTime = JSON.stringify(Date.now(inputValue));
-      //   const data = { startTime: dateNowStartTime };
       const data = { startTime: inputValue };
       editSession(todoId, session._id, data);
       setIsInputActive(false);
-      console.log("useClickOutside");
     }
   });
 
@@ -53,16 +49,15 @@ const SessionStartTime = ({ session, editSession, todoId, currentSession }) => {
         // onSetText(inputValue);
         const data = { startTime: inputValue };
         editSession(todoId, session._id, data);
-        console.log("enter key pressed");
         setIsInputActive(false);
       }
       // if Escape is pressed, revert the text and close the editor
       if (esc) {
-        console.log("esc key pressed");
         setInputValue(session.startTime);
         setIsInputActive(false);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enter, esc]); // watch the Enter and Escape key presses
 
   return (
@@ -83,11 +78,6 @@ const SessionStartTime = ({ session, editSession, todoId, currentSession }) => {
         // style={{ width: "8rem" }}
         value={moment(inputValue).local().format("YYYY-MM-DDTHH:mm:ss")}
         onChange={(e) => {
-          //   console.log("e.target.value " + e.target.value);
-          //   console.log(
-          //     "endtime " +
-          //       moment(session.endTime).local().format("YYYY-MM-DDTHH:mm:ss")
-          //   );
           if (
             e.target.value >
             moment(session.endTime).local().format("YYYY-MM-DDTHH:mm:ss")

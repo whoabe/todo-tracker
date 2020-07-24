@@ -7,14 +7,6 @@ const FormatTime = ({ elapsedTime }) => {
   } else {
     return <span>{moment(elapsedTime).format("mm:ss")}</span>;
   }
-
-  //   {
-  //     elapsedTime >= 3600000 ? (
-  //       <span>{moment(elapsedTime).format("hh:mm:ss")}</span>
-  //     ) : (
-  //       <span>{moment(elapsedTime).format("mm:ss")}</span>
-  //     );
-  //   }
 };
 
 export default FormatTime;
