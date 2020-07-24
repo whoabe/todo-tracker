@@ -52,6 +52,19 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+// @route    GET api/todo/user/:userid
+// @desc     Get all posts by userId
+// @access   Private
+router.get("/user/:userid", auth, async (req, res) => {
+  try {
+    const todos = await Todo.find({ user: req.params.userid });
+    res.json(todos);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
 // @route    GET api/todo/:id
 // @desc     Get todo by ID
 // @access   Private

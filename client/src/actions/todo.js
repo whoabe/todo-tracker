@@ -26,9 +26,9 @@ import {
 import { setAlert } from "../actions/alert";
 
 // Get posts
-export const getTodos = () => async (dispatch) => {
+export const getTodos = (userId) => async (dispatch) => {
   try {
-    const res = await api.get("/todos");
+    const res = await api.get(`/todos/user/${userId}`);
 
     dispatch({
       type: GET_TODOS,

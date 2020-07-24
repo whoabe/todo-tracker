@@ -13,7 +13,9 @@ const TodoList = ({
   auth,
 }) => {
   useEffect(() => {
-    getTodos();
+    if (auth && auth.user) {
+      getTodos(auth.user._id);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth]);
   return (
