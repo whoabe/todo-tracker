@@ -29,3 +29,11 @@ export const EDIT_TASK = "EDIT_TASK";
 // Session
 export const SET_SESSION = "SET_SESSION";
 export const REMOVE_SESSION = "REMOVE_SESSION";
+// Breaks
+export const START_BREAK = "START_BREAK";
+export const COMPLETE_BREAK = "COMPLETE_BREAK";
+export const EDIT_BREAK = "EDIT_BREAK";
+export const DELETE_BREAK = "DELETE_BREAK";
+// Current Break
+export const SET_CURRENT_BREAK = "SET_CURRENT_BREAK";
+export const REMOVE_CURRENT_BREAK = "REMOVE_CURRENT_BREAK";

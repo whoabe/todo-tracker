@@ -62,15 +62,22 @@ const SessionsList = ({
       </td>
       <td>
         <div>
-          <span className="todo-sessions">{todo.sessions.length}</span>
           {todo.sessions.length > 0 ? (
             <span className="mx dropdown-span">
-              <i
-                className="fas fa-angle-down"
-                onClick={() => setExpanded(!expanded)}
-              ></i>
+              {expanded ? (
+                <i
+                  className="fas fa-angle-down"
+                  onClick={() => setExpanded(!expanded)}
+                ></i>
+              ) : (
+                <i
+                  className="fas fa-angle-right"
+                  onClick={() => setExpanded(!expanded)}
+                ></i>
+              )}
             </span>
           ) : null}
+          <span className="todo-sessions">{todo.sessions.length}</span>
         </div>
       </td>
       <td></td>

@@ -1,6 +1,6 @@
 // Contains the Todo Tracker component
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import useInterval from "../../hooks/useInterval";
 import Timer from "./Timer";
@@ -10,7 +10,12 @@ import CompletedTodoList from "./CompletedTodoList";
 import TodoForm from "./TodoForm";
 import { setAlert } from "../../actions/alert";
 import { setTask } from "../../actions/task";
-import { startSession, completeSession } from "../../actions/todo";
+import {
+  startSession,
+  completeSession,
+  startBreak,
+  completeBreak,
+} from "../../actions/todo";
 
 const Landing = ({
   setAlert,
@@ -20,12 +25,18 @@ const Landing = ({
   todos,
   currentSession,
   startSession,
+  startBreak,
+  completeBreak,
+  currentBreak,
 }) => {
+  useEffect(() => {
+    checkIfCompletedTask(todos);
+  });
   const [mode, setMode] = useState("timer");
   const [isTimerActive, setIsTimerActive] = useState(false);
   // const [currentTask, setCurrentTask] = useState(null);
   const [timerTime, setTimerTime] = useState(0);
-
+  const [showCompletedTodoList, setShowCompletedTodoList] = useState(false);
   // todo stuff
   // const {
   //   todos,
@@ -62,6 +73,13 @@ const Landing = ({
     // console.log(timerTime)
   );
 
+  const checkIfCompletedTask = (todos) => {
+    if (todos && todos.find((todo) => todo.completed === true)) {
+      setShowCompletedTodoList(true);
+      // console.log(showCompletedTodoList);
+    }
+  };
+
   const completeSessionData = () => {
     const endTime = JSON.stringify(Date.now());
     const data = { endTime };
@@ -91,10 +109,16 @@ const Landing = ({
       startSession(task._id, data);
     }
     if (mode === "timer") {
+      // timer to break
       setMode("break");
       setTimerTime(0);
       setIsTimerActive(true);
+      const breakData = { startTime: JSON.stringify(Date.now()) };
+      startBreak(task._id, breakData);
     } else if (mode === "break") {
+      // need the current breakId in here
+      const breakEndData = { endTime: JSON.stringify(Date.now()) };
+      completeBreak(task._id, currentBreak._id, breakEndData);
       setMode("timer");
       setTimerTime(0);
       setIsTimerActive(true);
@@ -158,7 +182,9 @@ const Landing = ({
           // }}
           />
           {/* if there is a completed item */}
-          {todos.map((todo) => {
+          {/* if there is a completed item, showCompletedItems = True
+          if showCompletedItems=True, show the CompletedTodoList */}
+          {/* {todos.map((todo) => {
             if (todo.completed) {
               return [
                 <hr
@@ -172,7 +198,20 @@ const Landing = ({
                 <CompletedTodoList key="2" />,
               ];
             }
-          })}
+          })} */}
+          {showCompletedTodoList
+            ? [
+                <hr
+                  style={{
+                    width: "15rem",
+                    marginTop: "1rem",
+                    marginBottom: "0.5rem",
+                  }}
+                  key="1"
+                />,
+                <CompletedTodoList key="2" />,
+              ]
+            : null}
         </div>
       </div>
     </section>
@@ -183,6 +222,7 @@ const mapStateToProps = (state) => ({
   task: state.task,
   todos: state.todo.todos,
   currentSession: state.currentSession,
+  currentBreak: state.currentBreak,
 });
 
 export default connect(mapStateToProps, {
@@ -190,4 +230,6 @@ export default connect(mapStateToProps, {
   setTask,
   startSession,
   completeSession,
+  startBreak,
+  completeBreak,
 })(Landing);

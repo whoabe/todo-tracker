@@ -16,6 +16,12 @@ import {
   EDIT_TASK,
   REMOVE_TASK,
   SET_TASK,
+  START_BREAK,
+  COMPLETE_BREAK,
+  EDIT_BREAK,
+  DELETE_BREAK,
+  SET_CURRENT_BREAK,
+  REMOVE_CURRENT_BREAK,
 } from "./types";
 import { setAlert } from "../actions/alert";
 
@@ -41,42 +47,6 @@ export const getTodos = () => async (dispatch) => {
     });
   }
 };
-
-// add session
-// // Add like
-// export const addLike = id => async dispatch => {
-//     try {
-//         const res = await api.put(`/posts/like/${id}`);
-
-//         dispatch({
-//             type: UPDATE_LIKES,
-//             payload: { id, likes: res.data }
-//         });
-//     } catch (err) {
-//         dispatch({
-//             type: POST_ERROR,
-//             payload: { msg: err.response.statusText, status: err.response.status }
-//         });
-//     }
-// };
-
-// remove session
-// // Remove like
-// export const removeLike = id => async dispatch => {
-//     try {
-//         const res = await api.put(`/posts/unlike/${id}`);
-
-//         dispatch({
-//             type: UPDATE_LIKES,
-//             payload: { id, likes: res.data }
-//         });
-//     } catch (err) {
-//         dispatch({
-//             type: POST_ERROR,
-//             payload: { msg: err.response.statusText, status: err.response.status }
-//         });
-//     }
-// };
 
 // Delete todo
 export const deleteTodo = (id) => async (dispatch) => {
@@ -186,6 +156,16 @@ export const toggleTodo = (todoId) => async (dispatch) => {
         data: res.data,
       },
     });
+    dispatch({
+      type: REMOVE_TASK,
+    });
+    // if (res.data && res.data.length > 0) {
+    //   console.log(res.data);
+    //   dispatch({
+    //     type: SET_TASK,
+    //     payload: res.data[res.data.length - 1],
+    //   });
+    // }
   } catch (err) {
     dispatch({
       type: TODO_ERROR,
@@ -277,40 +257,82 @@ export const deleteSession = (todoId, sessionId) => async (dispatch) => {
     });
   }
 };
-// // Add comment
-// export const addComment = (postId, formData) => async dispatch => {
-//     try {
-//         const res = await api.post(`/posts/comment/${postId}`, formData);
+/////////////////////////////////////////
 
-//         dispatch({
-//             type: ADD_COMMENT,
-//             payload: res.data
-//         });
+// Start Break
+export const startBreak = (todoId, data) => async (dispatch) => {
+  try {
+    const res = await api.post(`/todos/breaks/${todoId}`, data);
+    // adds a session to the todo
+    console.log("todoId: " + todoId);
+    dispatch({
+      type: START_BREAK,
+      payload: { todoId, data: res.data },
+    });
+    // sets the current break
+    dispatch({
+      type: SET_CURRENT_BREAK,
+      payload: res.data,
+    });
+    // dispatch(setAlert("Session Started", "success"));
+  } catch (err) {
+    dispatch({
+      type: TODO_ERROR,
+      // broken
+      // payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+// Complete Break
+export const completeBreak = (todoId, breakId, data) => async (dispatch) => {
+  try {
+    const res = await api.put(`/todos/breaks/${todoId}/${breakId}`, data);
+    dispatch({
+      type: COMPLETE_BREAK,
+      payload: { todoId, data: res.data },
+      // don't need sessionId in the reducer because we're updating the entire todo
+      // payload: { todoId, breakId, data: res.data },
+    });
+    dispatch({
+      type: REMOVE_CURRENT_BREAK,
+    });
+  } catch (err) {
+    dispatch({
+      type: TODO_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
 
-//         dispatch(setAlert('Comment Added', 'success'));
-//     } catch (err) {
-//         dispatch({
-//             type: POST_ERROR,
-//             payload: { msg: err.response.statusText, status: err.response.status }
-//         });
-//     }
-// };
+//Edit Break
+export const editBreak = (todoId, breakId, data) => async (dispatch) => {
+  try {
+    const res = await api.put(`/todos/breaks/edit/${todoId}/${breakId}`, data);
+    dispatch({
+      type: EDIT_BREAK,
+      payload: { todoId, data: res.data },
+    });
+  } catch (err) {
+    dispatch({
+      type: TODO_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
 
-// // Delete comment
-// export const deleteComment = (postId, commentId) => async dispatch => {
-//     try {
-//         await api.delete(`/posts/comment/${postId}/${commentId}`);
-
-//         dispatch({
-//             type: REMOVE_COMMENT,
-//             payload: commentId
-//         });
-
-//         dispatch(setAlert('Comment Removed', 'success'));
-//     } catch (err) {
-//         dispatch({
-//             type: POST_ERROR,
-//             payload: { msg: err.response.statusText, status: err.response.status }
-//         });
-//     }
-// };
+// Delete Break
+export const deleteBreak = (todoId, breakId) => async (dispatch) => {
+  try {
+    const res = await api.delete(`/todos/breaks/${todoId}/${breakId}`);
+    dispatch({
+      type: DELETE_BREAK,
+      payload: { todoId, data: res.data },
+    });
+    // dispatch(setAlert("Session Removed", "success"));
+  } catch (err) {
+    dispatch({
+      type: TODO_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};

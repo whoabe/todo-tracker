@@ -10,11 +10,15 @@ import {
   EDIT_SESSION,
   TODO_ERROR,
   EDIT_TODO,
+  START_BREAK,
+  COMPLETE_BREAK,
+  EDIT_BREAK,
+  DELETE_BREAK,
 } from "../actions/types";
 
 const initialState = {
   todos: [],
-  todo: null,
+  currentTodo: null,
   loading: true,
   error: {},
 };
@@ -54,11 +58,27 @@ export default function (state = initialState, action) {
           }
         }),
       };
+    case START_BREAK:
+      return {
+        ...state,
+        todos: state.todos.map((todo) => {
+          if (todo._id === payload.todoId) {
+            const breaks = [...todo.breaks, payload.data];
+            return { ...todo, breaks };
+          } else {
+            return todo;
+          }
+        }),
+      };
+
     case COMPLETE_SESSION:
     case EDIT_TODO:
     case DELETE_SESSION:
     case EDIT_SESSION:
     case TOGGLE_TODO:
+    case EDIT_BREAK:
+    case DELETE_BREAK:
+    case COMPLETE_BREAK:
       return {
         ...state,
         todos: state.todos.map((todo) => {

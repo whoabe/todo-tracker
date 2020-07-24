@@ -103,6 +103,8 @@ router.put("/toggle/:id", auth, async (req, res) => {
     todo.completed = !todo.completed;
     await todo.save();
     return res.json(todo);
+    // const todos = await Todo.find().sort({ date: -1 });
+    // return res.json(todos);
   } catch (err) {
     console.error(err.message);
     return res.status(500).send("Server Error");
@@ -134,55 +136,6 @@ router.delete("/:id", [auth, checkObjectId("id")], async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
-
-// // @route    PUT api/posts/like/:id
-// // @desc     Like a post
-// // @access   Private
-// router.put("/like/:id", [auth, checkObjectId("id")], async (req, res) => {
-//   try {
-//     const post = await Post.findById(req.params.id);
-
-//     // Check if the post has already been liked
-//     if (post.likes.some((like) => like.user.toString() === req.user.id)) {
-//       return res.status(400).json({ msg: "Post already liked" });
-//     }
-
-//     post.likes.unshift({ user: req.user.id });
-
-//     await post.save();
-
-//     return res.json(post.likes);
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send("Server Error");
-//   }
-// });
-
-// // @route    PUT api/posts/unlike/:id
-// // @desc     Unlike a post
-// // @access   Private
-// router.put("/unlike/:id", [auth, checkObjectId("id")], async (req, res) => {
-//   try {
-//     const post = await Post.findById(req.params.id);
-
-//     // Check if the post has not yet been liked
-//     if (!post.likes.some((like) => like.user.toString() === req.user.id)) {
-//       return res.status(400).json({ msg: "Post has not yet been liked" });
-//     }
-
-//     // remove the like
-//     post.likes = post.likes.filter(
-//       ({ user }) => user.toString() !== req.user.id
-//     );
-
-//     await post.save();
-
-//     return res.json(post.likes);
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send("Server Error");
-//   }
-// });
 
 // @route    POST api/todos/session/:id
 // @desc     Add session on a todo
@@ -368,11 +321,11 @@ router.delete("/session/:id/:session_id", auth, async (req, res) => {
 
 //////////////////////////////////////////////////////////
 /////////////////////////////////
-// @route    POST api/todos/break/:id
+// @route    POST api/todos/breaks/:id
 // @desc     Add break on a todo
 // @access   Private
 router.post(
-  "/session/:id",
+  "/breaks/:id",
   [
     auth,
     checkObjectId("id"),
@@ -410,10 +363,10 @@ router.post(
   }
 );
 
-// @route    PUT api/todos/break/:id/:break_id
-// @desc     Complete session
+// @route    PUT api/todos/breaks/:id/:break_id
+// @desc     Complete break
 // @access   Private
-router.put("/break/:id/:break_id", auth, async (req, res) => {
+router.put("/breaks/:id/:break_id", auth, async (req, res) => {
   try {
     const todo = await Todo.findById(req.params.id);
     // Pull out session
@@ -426,13 +379,13 @@ router.put("/break/:id/:break_id", auth, async (req, res) => {
     }
     // Make sure session exists
     if (!breakk) {
-      return res.status(404).json({ msg: "Session does not exist" });
+      return res.status(404).json({ msg: "Break does not exist" });
     }
 
     // add endTime to Todo
     breakk.endTime = req.body.endTime;
     breakk.time = breakk.endTime - breakk.startTime;
-    todo.totalBreakTime = todo.breaks.reduce((breakTime, breakk) => {
+    breakk.totalTime = todo.breaks.reduce((breakTime, breakk) => {
       return breakTime + breakk.time;
     }, 0);
     await todo.save();
@@ -451,13 +404,13 @@ router.put("/break/:id/:break_id", auth, async (req, res) => {
 });
 
 ///////////////
-// @route    PUT api/todos/break/edit/:id/:break_id
+// @route    PUT api/todos/breaks/edit/:id/:break_id
 // @desc     Edit break
 // @access   Private
-router.put("/break/edit/:id/:session_id", auth, async (req, res) => {
+router.put("/breaks/edit/:id/:break_id", auth, async (req, res) => {
   try {
     const todo = await Todo.findById(req.params.id);
-    // Pull out session
+    // Pull out break
     const breakk = todo.breaks.find(
       (breakk) => breakk.id === req.params.break_id
     );
@@ -465,9 +418,9 @@ router.put("/break/edit/:id/:session_id", auth, async (req, res) => {
     if (todo.user.toString() !== req.user.id) {
       return res.status(401).json({ msg: "User not authorized" });
     }
-    // Make sure session exists
+    // Make sure break exists
     if (!breakk) {
-      return res.status(404).json({ msg: "Session does not exist" });
+      return res.status(404).json({ msg: "Break does not exist" });
     }
 
     // check for start/endTime and add them in
@@ -494,7 +447,7 @@ router.put("/break/edit/:id/:session_id", auth, async (req, res) => {
     }
 
     breakk.time = breakk.endTime - breakk.startTime;
-    todo.totalBreakTime = todo.breaks.reduce((breakTime, breakk) => {
+    todo.totalTime = todo.breaks.reduce((breakTime, breakk) => {
       return breakTime + breakk.time;
     }, 0);
     await todo.save();
@@ -513,29 +466,29 @@ router.put("/break/edit/:id/:session_id", auth, async (req, res) => {
 });
 //////////////
 
-// @route    DELETE api/todos/break/:id/:break_id
+// @route    DELETE api/todos/breaks/:id/:break_id
 // @desc     Delete break
 // @access   Private
-router.delete("/break/:id/:break_id", auth, async (req, res) => {
+router.delete("/breaks/:id/:break_id", auth, async (req, res) => {
   try {
     const todo = await Todo.findById(req.params.id);
 
-    // Pull out session
+    // Pull out break
     const breakk = todo.breaks.find(
-      (breakk) => breakk.id === req.params.session_id
+      (breakk) => breakk.id === req.params.break_id
     );
-    // Make sure session exists
+    // Make sure break exists
     if (!breakk) {
-      return res.status(404).json({ msg: "Session does not exist" });
+      return res.status(404).json({ msg: "Break does not exist" });
     }
     // Check user
     if (todo.user.toString() !== req.user.id) {
       return res.status(401).json({ msg: "User not authorized" });
     }
 
-    todo.breaks = todo.breaks.filter(({ id }) => id !== req.params.session_id);
+    todo.breaks = todo.breaks.filter(({ id }) => id !== req.params.break_id);
     if (breakk.endTime) {
-      todo.totalBreakTime = todo.breaks.reduce((breakTime, breakk) => {
+      todo.totalTime = todo.breaks.reduce((breakTime, breakk) => {
         return breakTime + breakk.time;
       }, 0);
     }
