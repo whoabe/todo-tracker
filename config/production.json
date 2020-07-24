@@ -1,0 +1,4 @@
+{
+  "mongoURI": "mongodb+srv://whoabe:vgXsJ55B8p2V9@todotracker-a8qjr.mongodb.net/test?retryWrites=true&w=majority",
+  "jwtSecret": "mysecrttoken"
+}
